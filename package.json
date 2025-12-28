@@ -26,5 +26,8 @@
     "url": "https://github.com/tandemrecruit/ge-flipper.git"
   },
   "keywords": ["osrs", "runescape", "grand-exchange", "flipping", "trading"],
-  "author": "GpGoBrrr"
+  "author": "GpGoBrrr",
+  "engines": {
+    "node": ">=18.0.0"
+  }
 }

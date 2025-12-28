@@ -15,7 +15,7 @@ A real-time flipping dashboard for Old School RuneScape with tax calculations, v
 
 ## Prerequisites
 
-- Node.js (v16 or higher)
+- Node.js (v18 or higher)
 - npm or yarn
 
 ## Quick Start
