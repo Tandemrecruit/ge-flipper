@@ -1,4 +1,4 @@
-const PROXY_URL = import.meta.env.VITE_PROXY_URL || 'http://localhost:3013';
+const PROXY_URL = import.meta.env.VITE_PROXY_URL || 'http://localhost:3013/api';
 export const DIRECT_API = 'https://prices.runescape.wiki/api/v1/osrs';
 
 // Fetch API with proxy-first strategy
