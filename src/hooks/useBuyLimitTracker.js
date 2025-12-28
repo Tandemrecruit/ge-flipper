@@ -1,12 +1,74 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 
 const STORAGE_KEY = 'ge-buy-limits';
+const FOUR_HOURS_MS = 4 * 60 * 60 * 1000; // 4 hours in milliseconds
+
+// Migrate old format data to new format
+const migrateBuyLimitData = (data) => {
+  if (!data || typeof data !== 'object') return {};
+  
+  const migrated = {};
+  const now = new Date();
+  
+  Object.entries(data).forEach(([itemId, limit]) => {
+    // Check if it's old format (has 'purchased' and 'lastReset' but no 'purchases')
+    if (limit && typeof limit === 'object' && 'purchased' in limit && !('purchases' in limit)) {
+      // Migrate old format to new format
+      const purchases = [];
+      
+      // If there was a purchased count and lastReset, try to preserve it
+      if (limit.purchased > 0 && limit.lastReset) {
+        const resetTime = new Date(limit.lastReset);
+        const timeSinceReset = now.getTime() - resetTime.getTime();
+        
+        // Only migrate if the reset was within the last 4 hours
+        if (timeSinceReset < FOUR_HOURS_MS && timeSinceReset >= 0) {
+          purchases.push({
+            timestamp: limit.lastReset,
+            quantity: limit.purchased
+          });
+        }
+      }
+      
+      migrated[itemId] = {
+        itemId: limit.itemId || itemId,
+        itemName: limit.itemName || '',
+        buyLimit: limit.buyLimit || 0,
+        purchases: purchases
+      };
+    } else if (limit && typeof limit === 'object' && 'purchases' in limit) {
+      // Already new format, but clean up old purchases outside 4-hour window
+      const now = new Date();
+      const cutoffTime = now.getTime() - FOUR_HOURS_MS;
+      
+      migrated[itemId] = {
+        ...limit,
+        purchases: (limit.purchases || []).filter(p => {
+          const purchaseTime = new Date(p.timestamp).getTime();
+          return purchaseTime > cutoffTime;
+        })
+      };
+    } else {
+      // Unknown format, keep as-is but ensure purchases array exists
+      migrated[itemId] = {
+        ...limit,
+        purchases: limit.purchases || []
+      };
+    }
+  });
+  
+  return migrated;
+};
 
 export const useBuyLimitTracker = (flipLog, mapping) => {
   const [buyLimits, setBuyLimits] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
-      return saved ? JSON.parse(saved) : {};
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return migrateBuyLimitData(parsed);
+      }
+      return {};
     } catch {
       return {};
     }
@@ -28,7 +90,7 @@ export const useBuyLimitTracker = (flipLog, mapping) => {
     setBuyLimits(prev => {
       const updated = { ...prev };
       const now = new Date();
-      const today = now.toISOString().split('T')[0];
+      const cutoffTime = now.getTime() - FOUR_HOURS_MS;
 
       flipLog.forEach(flip => {
         if (!flip.itemId || flip.status !== 'complete' || !flip.buyPrice) return;
@@ -40,24 +102,33 @@ export const useBuyLimitTracker = (flipLog, mapping) => {
             itemId: flip.itemId,
             itemName: item?.name || flip.itemName || '',
             buyLimit: item?.limit || 0,
-            purchased: 0,
-            lastReset: now.toISOString()
+            purchases: []
           };
         }
 
         const limit = updated[flip.itemId];
-        const flipDate = new Date(flip.date).toISOString().split('T')[0];
-        const lastResetDate = limit.lastReset ? new Date(limit.lastReset).toISOString().split('T')[0] : null;
-
-        // Reset if it's a new day
-        if (lastResetDate !== today) {
-          limit.purchased = 0;
-          limit.lastReset = now.toISOString();
+        
+        // Ensure purchases array exists
+        if (!Array.isArray(limit.purchases)) {
+          limit.purchases = [];
         }
+        
+        // Clean up purchases older than 4 hours
+        limit.purchases = limit.purchases.filter(p => {
+          const purchaseTime = new Date(p.timestamp).getTime();
+          return purchaseTime > cutoffTime;
+        });
 
-        // Only count if flip was today
-        if (flipDate === today) {
-          limit.purchased = (limit.purchased || 0) + flip.quantity;
+        // Add this purchase with its timestamp
+        const flipTimestamp = flip.date ? new Date(flip.date).toISOString() : now.toISOString();
+        const flipTime = new Date(flipTimestamp).getTime();
+        
+        // Only add if the flip was within the last 4 hours
+        if (flipTime > cutoffTime) {
+          limit.purchases.push({
+            timestamp: flipTimestamp,
+            quantity: flip.quantity || 0
+          });
         }
       });
 
@@ -72,13 +143,11 @@ export const useBuyLimitTracker = (flipLog, mapping) => {
     // Create record on-demand if it doesn't exist
     if (!limit && mapping && mapping[itemId]) {
       const item = mapping[itemId];
-      const now = new Date();
       const newRecord = {
         itemId: item.id,
         itemName: item.name,
         buyLimit: item.limit || 0,
-        purchased: 0,
-        lastReset: now.toISOString()
+        purchases: []
       };
       
       // Create the record in state for future calls
@@ -94,43 +163,60 @@ export const useBuyLimitTracker = (flipLog, mapping) => {
     if (!limit) return null;
 
     const now = new Date();
-    const today = now.toISOString().split('T')[0];
-    const lastResetDate = limit.lastReset ? new Date(limit.lastReset).toISOString().split('T')[0] : null;
-
-    // Reset if it's a new day
-    if (lastResetDate !== today) {
-      return limit.buyLimit;
+    const cutoffTime = now.getTime() - FOUR_HOURS_MS;
+    
+    // Ensure purchases array exists
+    if (!Array.isArray(limit.purchases)) {
+      limit.purchases = [];
     }
+    
+    // Filter purchases to only those within the last 4 hours
+    const recentPurchases = limit.purchases.filter(p => {
+      const purchaseTime = new Date(p.timestamp).getTime();
+      return purchaseTime > cutoffTime;
+    });
+    
+    // Sum quantities of recent purchases
+    const purchased = recentPurchases.reduce((sum, p) => sum + (p.quantity || 0), 0);
 
-    return Math.max(0, limit.buyLimit - (limit.purchased || 0));
+    return Math.max(0, limit.buyLimit - purchased);
   };
 
   // Manually update purchased count
   const updatePurchased = (itemId, quantity) => {
     setBuyLimits(prev => {
       const updated = { ...prev };
+      const now = new Date();
+      const cutoffTime = now.getTime() - FOUR_HOURS_MS;
+      
       if (!updated[itemId]) {
         updated[itemId] = {
           itemId,
           itemName: '',
           buyLimit: 0,
-          purchased: 0,
-          lastReset: new Date().toISOString()
+          purchases: []
         };
       }
 
-      const now = new Date();
-      const today = now.toISOString().split('T')[0];
-      const lastResetDate = updated[itemId].lastReset 
-        ? new Date(updated[itemId].lastReset).toISOString().split('T')[0] 
-        : null;
-
-      if (lastResetDate !== today) {
-        updated[itemId].purchased = 0;
-        updated[itemId].lastReset = now.toISOString();
+      // Ensure purchases array exists
+      if (!Array.isArray(updated[itemId].purchases)) {
+        updated[itemId].purchases = [];
       }
+      
+      // Clean up purchases older than 4 hours
+      updated[itemId].purchases = updated[itemId].purchases.filter(p => {
+        const purchaseTime = new Date(p.timestamp).getTime();
+        return purchaseTime > cutoffTime;
+      });
 
-      updated[itemId].purchased = Math.max(0, (updated[itemId].purchased || 0) + quantity);
+      // Add new purchase with current timestamp
+      if (quantity !== 0) {
+        updated[itemId].purchases.push({
+          timestamp: now.toISOString(),
+          quantity: quantity
+        });
+      }
+      
       return updated;
     });
   };

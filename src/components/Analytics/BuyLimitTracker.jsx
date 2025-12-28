@@ -42,7 +42,7 @@ export default function BuyLimitTracker() {
         🛒 Buy Limit Tracker
       </h3>
       <p style={{ color: '#d4a84b', fontSize: 13, marginBottom: 16 }}>
-        Track remaining buy limits for items. Limits reset daily at midnight game time.
+        Track remaining buy limits for items. Limits operate on a rolling 4-hour window.
       </p>
 
       {/* Search Input */}
@@ -100,7 +100,7 @@ export default function BuyLimitTracker() {
         ) : (
           allItems.map(limit => {
             const remaining = getRemainingLimit(limit.itemId);
-            const used = limit.buyLimit - (remaining || 0);
+            const used = remaining !== null ? limit.buyLimit - remaining : 0;
             const usagePercent = limit.buyLimit > 0 ? (used / limit.buyLimit) * 100 : 0;
             const isLow = remaining !== null && remaining < limit.buyLimit * 0.2;
 
