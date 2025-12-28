@@ -3,10 +3,12 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import { usePriceHistory } from '../../hooks/usePriceHistory';
 
 export default function PriceHistoryChart({ itemId: propItemId, itemName: propItemName, prices, mapping }) {
-  const { getDailyHistory, getItemHistory } = usePriceHistory(prices, mapping);
   const [timeRange, setTimeRange] = useState(7); // days
   const [viewMode, setViewMode] = useState('daily'); // 'daily' or 'detailed'
   const [selectedItemId, setSelectedItemId] = useState(propItemId || null);
+
+  const itemId = selectedItemId || propItemId;
+  const { getDailyHistory, getItemHistory } = usePriceHistory(prices, mapping, [], [], itemId);
 
   // Get items with price history
   const itemsWithHistory = useMemo(() => {
@@ -14,8 +16,6 @@ export default function PriceHistoryChart({ itemId: propItemId, itemName: propIt
       .filter(item => prices[item.id] && (prices[item.id].high || prices[item.id].low))
       .sort((a, b) => a.name.localeCompare(b.name));
   }, [mapping, prices]);
-
-  const itemId = selectedItemId || propItemId;
   const itemName = propItemName || (itemId ? mapping[itemId]?.name : null);
 
   if (!itemId || !prices[itemId]) {

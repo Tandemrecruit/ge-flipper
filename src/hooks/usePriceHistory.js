@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 const STORAGE_KEY = 'ge-price-history';
 const MAX_HISTORY_DAYS = 30; // Keep 30 days of history
 
-export const usePriceHistory = (prices, mapping) => {
+export const usePriceHistory = (prices, mapping, flipLog = [], slots = [], currentItemId = null) => {
   const [history, setHistory] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -13,6 +13,36 @@ export const usePriceHistory = (prices, mapping) => {
       return {};
     }
   });
+
+  // Compute watchlist from flipLog, slots, and currentItemId
+  const watchlist = useMemo(() => {
+    const watchlistSet = new Set();
+    
+    // Add items from tracked flips
+    if (flipLog && Array.isArray(flipLog)) {
+      flipLog.forEach(flip => {
+        if (flip.itemId) {
+          watchlistSet.add(String(flip.itemId));
+        }
+      });
+    }
+    
+    // Add items from slots
+    if (slots && Array.isArray(slots)) {
+      slots.forEach(slot => {
+        if (slot.item && slot.item.id) {
+          watchlistSet.add(String(slot.item.id));
+        }
+      });
+    }
+    
+    // Add currently viewed item
+    if (currentItemId) {
+      watchlistSet.add(String(currentItemId));
+    }
+    
+    return watchlistSet;
+  }, [flipLog, slots, currentItemId]);
 
   // Save history to localStorage
   useEffect(() => {
@@ -23,9 +53,28 @@ export const usePriceHistory = (prices, mapping) => {
     }
   }, [history]);
 
-  // Update history when prices change
+  // Clean up history for items not in watchlist
+  useEffect(() => {
+    setHistory(prev => {
+      const updated = { ...prev };
+      let hasChanges = false;
+      
+      // Remove history for items not in watchlist
+      Object.keys(updated).forEach(itemId => {
+        if (!watchlist.has(itemId)) {
+          delete updated[itemId];
+          hasChanges = true;
+        }
+      });
+      
+      return hasChanges ? updated : prev;
+    });
+  }, [watchlist]);
+
+  // Update history when prices change (only for watchlist items)
   useEffect(() => {
     if (!prices || Object.keys(prices).length === 0) return;
+    if (watchlist.size === 0) return; // No items to track
 
     const now = new Date();
     const timestamp = now.toISOString();
@@ -34,7 +83,10 @@ export const usePriceHistory = (prices, mapping) => {
     setHistory(prev => {
       const updated = { ...prev };
       
+      // Only process items in the watchlist
       Object.entries(prices).forEach(([itemId, priceData]) => {
+        if (!watchlist.has(itemId)) return; // Skip items not in watchlist
+        
         if (!updated[itemId]) {
           updated[itemId] = [];
         }
@@ -69,7 +121,7 @@ export const usePriceHistory = (prices, mapping) => {
 
       return updated;
     });
-  }, [prices]);
+  }, [prices, watchlist]);
 
   // Get price history for a specific item
   const getItemHistory = (itemId, days = 7) => {

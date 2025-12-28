@@ -7,7 +7,7 @@ import { computeSuggestionScore, isEligibleForSuggestion, generateSuggestionReas
 
 export default function SmartSuggestions({ prices, volumes, mapping, onTrackFlip, onAssignToSlot }) {
   const { itemAnalytics, flipLog } = useFlipTracker();
-  const { getVolatility, getPriceTrend } = usePriceHistory(prices, mapping);
+  const { getVolatility, getPriceTrend } = usePriceHistory(prices, mapping, flipLog);
   
   // Add null checks to prevent crashes
   if (!prices || !volumes || !mapping) {

@@ -21,27 +21,6 @@ export const useBuyLimitTracker = (flipLog, mapping) => {
     }
   }, [buyLimits]);
 
-  // Initialize buy limits from mapping
-  useEffect(() => {
-    if (!mapping || Object.keys(mapping).length === 0) return;
-
-    setBuyLimits(prev => {
-      const updated = { ...prev };
-      Object.values(mapping).forEach(item => {
-        if (item.id && !updated[item.id]) {
-          updated[item.id] = {
-            itemId: item.id,
-            itemName: item.name,
-            buyLimit: item.limit || 0,
-            purchased: 0,
-            lastReset: new Date().toISOString()
-          };
-        }
-      });
-      return updated;
-    });
-  }, [mapping]);
-
   // Track purchases from flip log
   useEffect(() => {
     if (!flipLog || flipLog.length === 0) return;
@@ -54,9 +33,19 @@ export const useBuyLimitTracker = (flipLog, mapping) => {
       flipLog.forEach(flip => {
         if (!flip.itemId || flip.status !== 'complete' || !flip.buyPrice) return;
 
-        const limit = updated[flip.itemId];
-        if (!limit) return;
+        // Create record on-demand if it doesn't exist
+        if (!updated[flip.itemId]) {
+          const item = mapping && mapping[flip.itemId];
+          updated[flip.itemId] = {
+            itemId: flip.itemId,
+            itemName: item?.name || flip.itemName || '',
+            buyLimit: item?.limit || 0,
+            purchased: 0,
+            lastReset: now.toISOString()
+          };
+        }
 
+        const limit = updated[flip.itemId];
         const flipDate = new Date(flip.date).toISOString().split('T')[0];
         const lastResetDate = limit.lastReset ? new Date(limit.lastReset).toISOString().split('T')[0] : null;
 
@@ -74,11 +63,34 @@ export const useBuyLimitTracker = (flipLog, mapping) => {
 
       return updated;
     });
-  }, [flipLog]);
+  }, [flipLog, mapping]);
 
-  // Get remaining buy limit for an item
+  // Get remaining buy limit for an item (creates record on-demand if needed)
   const getRemainingLimit = (itemId) => {
-    const limit = buyLimits[itemId];
+    let limit = buyLimits[itemId];
+    
+    // Create record on-demand if it doesn't exist
+    if (!limit && mapping && mapping[itemId]) {
+      const item = mapping[itemId];
+      const now = new Date();
+      const newRecord = {
+        itemId: item.id,
+        itemName: item.name,
+        buyLimit: item.limit || 0,
+        purchased: 0,
+        lastReset: now.toISOString()
+      };
+      
+      // Create the record in state for future calls
+      setBuyLimits(prev => {
+        if (prev[itemId]) return prev; // Already created by another call
+        return { ...prev, [itemId]: newRecord };
+      });
+      
+      // Use the newly created record for this call
+      limit = newRecord;
+    }
+    
     if (!limit) return null;
 
     const now = new Date();

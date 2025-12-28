@@ -13,7 +13,7 @@ import { computeSuggestionScore } from '../../utils/suggestions';
  */
 export default function SuggestionEvaluation({ prices, volumes, mapping }) {
   const { flipLog, itemAnalytics } = useFlipTracker();
-  const { getVolatility } = usePriceHistory(prices, mapping);
+  const { getVolatility } = usePriceHistory(prices, mapping, flipLog);
   const { items } = useItems(prices, volumes, mapping);
   
   const evaluation = useMemo(() => {
