@@ -122,46 +122,7 @@ export const useFlipTracker = () => {
       return;
     }
     
-    // Calculate expected profit per item
-    let expectedPerItem = 0;
-    if (suggestedSell > 0 && suggestedBuy > 0) {
-      const expectedTax = calculateTax(suggestedSell);
-      expectedPerItem = suggestedSell - expectedTax - suggestedBuy;
-    } else {
-      expectedPerItem = expectedProfit;
-    }
-    
-    // Default quantity is 1
-    const qty = 1;
-    const expectedTotal = expectedPerItem * qty;
-    
-    // Automatically create and save the flip entry
-    const flip = {
-      id: Date.now(),
-      itemId: item.id || 0,
-      itemName: item.name,
-      buyPrice: suggestedBuy,
-      sellPrice: null,
-      netSellPrice: null,
-      suggestedSell: suggestedSell || 0,
-      suggestedBuy: suggestedBuy,
-      quantity: qty,
-      expectedProfit: expectedTotal,
-      actualProfit: null,
-      tax: 0,
-      status: 'pending',
-      date: new Date().toISOString()
-    };
-    
-    // Add to flip log immediately
-    setFlipLog(prev => {
-      const newLog = [flip, ...prev];
-      console.log('addFlip: Adding flip to log', flip);
-      console.log('addFlip: New log length', newLog.length);
-      return newLog;
-    });
-    
-    // Also set newFlip in case user wants to edit it immediately
+    // Set newFlip so user can edit in the form before saving
     setNewFlip({
       itemId: item.id || 0,
       itemName: item.name,
