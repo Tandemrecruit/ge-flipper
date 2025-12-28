@@ -67,7 +67,7 @@ export default function ItemDetailModal({ item, onClose, onTrackFlip, onAssignTo
 
         <div className="detail-grid">
           <div className="detail-box">
-            <div className="detail-label">Instant Buy (Low)</div>
+            <div className="detail-label">Low</div>
             <div className="detail-value">{formatGp(item.buyPrice)}</div>
             {item.avgBuyPrice && (
               <div style={{ fontSize: 13, color: '#93c5fd', marginTop: 4 }}>
@@ -76,7 +76,7 @@ export default function ItemDetailModal({ item, onClose, onTrackFlip, onAssignTo
             )}
           </div>
           <div className="detail-box">
-            <div className="detail-label">Instant Sell (High)</div>
+            <div className="detail-label">High</div>
             <div className="detail-value">{formatGp(item.sellPrice)}</div>
             {item.avgSellPrice && (
               <div style={{ fontSize: 13, color: '#fde68a', marginTop: 4 }}>

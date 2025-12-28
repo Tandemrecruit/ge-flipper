@@ -19,10 +19,10 @@ export default function ItemTable({ items, loading, sortBy, sortAsc, onSort, onI
                 Vol / Limit<SortIcon field="volume" sortBy={sortBy} sortAsc={sortAsc} />
               </th>
               <th className="th-cell" onClick={() => onSort('buyPrice')} style={{ padding: '16px 14px', textAlign: 'right', borderBottom: '2px solid #6b5a42', color: '#f5ead6', fontSize: 14, fontWeight: 600 }}>
-                Buy<SortIcon field="buyPrice" sortBy={sortBy} sortAsc={sortAsc} />
+                Low<SortIcon field="buyPrice" sortBy={sortBy} sortAsc={sortAsc} />
               </th>
               <th className="th-cell" onClick={() => onSort('sellPrice')} style={{ padding: '16px 14px', textAlign: 'right', borderBottom: '2px solid #6b5a42', color: '#f5ead6', fontSize: 14, fontWeight: 600 }}>
-                Sell<SortIcon field="sellPrice" sortBy={sortBy} sortAsc={sortAsc} />
+                High<SortIcon field="sellPrice" sortBy={sortBy} sortAsc={sortAsc} />
               </th>
               <th className="th-cell" onClick={() => onSort('spreadPercent')} style={{ padding: '16px 14px', textAlign: 'right', borderBottom: '2px solid #6b5a42', color: '#f5ead6', fontSize: 14, fontWeight: 600 }}>
                 Spread<SortIcon field="spreadPercent" sortBy={sortBy} sortAsc={sortAsc} />
