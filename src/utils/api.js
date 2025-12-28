@@ -1,17 +1,4 @@
-// Proxy URL from environment variable, with fallback for development
-const getProxyUrl = () => {
-  if (import.meta.env.VITE_PROXY_URL) {
-    return import.meta.env.VITE_PROXY_URL;
-  }
-  // Default to localhost for development only
-  if (import.meta.env.DEV) {
-    return 'http://localhost:3013/api';
-  }
-  // Production requires VITE_PROXY_URL to be set
-  return null;
-};
-
-export const PROXY_URL = getProxyUrl();
+const PROXY_URL = import.meta.env.VITE_PROXY_URL || 'http://localhost:3013';
 export const DIRECT_API = 'https://prices.runescape.wiki/api/v1/osrs';
 
 // Fetch API with proxy-first strategy
