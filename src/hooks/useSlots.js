@@ -129,14 +129,28 @@ export const useSlots = () => {
   };
 
   const clearSlot = (slotId) => {
-    setSlots(prev => prev.map(slot => 
-      slot.id === slotId ? { ...slot, item: null } : slot
-    ));
+    // Normalize slotId to number for comparison
+    const normalizedSlotId = typeof slotId === 'string' ? parseInt(slotId, 10) : slotId;
+    if (isNaN(normalizedSlotId)) {
+      console.error('clearSlot: Invalid slot ID', slotId);
+      return;
+    }
+    setSlots(prev => prev.map(slot => {
+      const normalizedId = typeof slot.id === 'string' ? parseInt(slot.id, 10) : slot.id;
+      return normalizedId === normalizedSlotId ? { ...slot, item: null } : slot;
+    }));
   };
 
   const updateSlotQuantity = (slotId, newQty) => {
+    // Normalize slotId to number for comparison
+    const normalizedSlotId = typeof slotId === 'string' ? parseInt(slotId, 10) : slotId;
+    if (isNaN(normalizedSlotId)) {
+      console.error('updateSlotQuantity: Invalid slot ID', slotId);
+      return;
+    }
     setSlots(prev => prev.map(slot => {
-      if (slot.id !== slotId || !slot.item) return slot;
+      const normalizedId = typeof slot.id === 'string' ? parseInt(slot.id, 10) : slot.id;
+      if (normalizedId !== normalizedSlotId || !slot.item) return slot;
       const qty = Math.max(0, parseInt(newQty) || 0);
       const profitPerItem = slot.item.suggestedProfit || slot.item.netProfit;
       const costPerItem = slot.item.suggestedBuy || slot.item.buyPrice;
@@ -153,14 +167,21 @@ export const useSlots = () => {
   };
 
   const changeSlotType = (slotId, newType) => {
+    // Normalize slotId to number for comparison
+    const normalizedSlotId = typeof slotId === 'string' ? parseInt(slotId, 10) : slotId;
+    if (isNaN(normalizedSlotId)) {
+      console.error('changeSlotType: Invalid slot ID', slotId);
+      return;
+    }
     const labels = {
       liquid: 'Liquid Staple',
       medium: 'Medium Margin',
       opportunity: 'Opportunity'
     };
-    setSlots(prev => prev.map(slot => 
-      slot.id === slotId ? { ...slot, type: newType, label: labels[newType] } : slot
-    ));
+    setSlots(prev => prev.map(slot => {
+      const normalizedId = typeof slot.id === 'string' ? parseInt(slot.id, 10) : slot.id;
+      return normalizedId === normalizedSlotId ? { ...slot, type: newType, label: labels[newType] } : slot;
+    }));
   };
 
   // Helper function to check if a slot is filled

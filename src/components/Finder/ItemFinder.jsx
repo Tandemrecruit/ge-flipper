@@ -67,7 +67,12 @@ export default function ItemFinder({
   const handleAssignToSlot = (slotId, item, gold) => {
     // Find slot from availableSlots (which is the full slots array from App.jsx)
     // availableSlots prop contains all slots, not filtered
-    const slot = availableSlots?.find(s => s.id === slotId);
+    // Normalize slotId to number for comparison
+    const normalizedSlotId = typeof slotId === 'string' ? parseInt(slotId, 10) : slotId;
+    const slot = availableSlots?.find(s => {
+      const normalizedId = typeof s.id === 'string' ? parseInt(s.id, 10) : s.id;
+      return normalizedId === normalizedSlotId;
+    });
     const userGold = gold ? parseFloat(gold) : (availableGold ? parseFloat(availableGold) : null);
     let suggestedPercent = slot?.type === 'liquid' ? 0.8 : (slot?.type === 'medium' ? 0.5 : 0.3);
     let suggestedVol = Math.floor((item.buyLimit || 100) * suggestedPercent);
