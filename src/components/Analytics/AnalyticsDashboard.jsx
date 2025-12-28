@@ -11,6 +11,8 @@ export default function AnalyticsDashboard({
   prices, 
   volumes, 
   mapping, 
+  flipLog,
+  itemAnalytics,
   onTrackFlip, 
   onAssignToSlot 
 }) {
@@ -65,11 +67,16 @@ export default function AnalyticsDashboard({
 
       {/* Active View Content */}
       {activeView === 'roi' && (
-        <ROIDashboard />
+        <ROIDashboard 
+          flipLog={flipLog}
+          itemAnalytics={itemAnalytics}
+        />
       )}
 
       {activeView === 'timeline' && (
-        <ProfitTimeline />
+        <ProfitTimeline 
+          flipLog={flipLog}
+        />
       )}
 
       {activeView === 'priceHistory' && (
@@ -86,6 +93,8 @@ export default function AnalyticsDashboard({
           prices={prices}
           volumes={volumes}
           mapping={mapping}
+          flipLog={flipLog}
+          itemAnalytics={itemAnalytics}
           onTrackFlip={onTrackFlip}
           onAssignToSlot={onAssignToSlot}
         />
@@ -96,11 +105,16 @@ export default function AnalyticsDashboard({
           prices={prices}
           volumes={volumes}
           mapping={mapping}
+          flipLog={flipLog}
+          itemAnalytics={itemAnalytics}
         />
       )}
 
       {activeView === 'buyLimits' && (
-        <BuyLimitTracker />
+        <BuyLimitTracker 
+          flipLog={flipLog}
+          mapping={mapping}
+        />
       )}
 
       {activeView === 'competition' && (

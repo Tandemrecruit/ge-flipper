@@ -19,7 +19,7 @@ export default function GEFlipper() {
 
   const { prices, volumes, mapping, loading, apiSource, usingSampleData, error, lastUpdate, refreshPrices } = usePrices(autoRefreshInterval);
   const { slots, slotStats, assignToSlot, clearSlot, updateSlotQuantity, changeSlotType, setSlots, isSlotFilled } = useSlots();
-  const { flipLog, addFlip } = useFlipTracker();
+  const { flipLog, addFlip, itemAnalytics } = useFlipTracker();
 
   const handleTrackFlip = (item) => {
     addFlip(item);
@@ -95,6 +95,8 @@ export default function GEFlipper() {
           prices={prices}
           volumes={volumes}
           mapping={mapping}
+          flipLog={flipLog}
+          itemAnalytics={itemAnalytics}
           onTrackFlip={handleTrackFlip}
           onAssignToSlot={handleAssignToSlot}
         />

@@ -1,11 +1,9 @@
 import React, { useMemo } from 'react';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { useFlipTracker } from '../../hooks/useFlipTracker';
 
 const COLORS = ['#4caf50', '#f44336', '#ff9800', '#2196f3', '#9c27b0', '#00bcd4'];
 
-export default function ROIDashboard() {
-  const { flipLog, itemAnalytics } = useFlipTracker();
+export default function ROIDashboard({ flipLog, itemAnalytics }) {
 
   const portfolioMetrics = useMemo(() => {
     const completed = flipLog.filter(f => f.status === 'complete' && f.actualProfit !== null);

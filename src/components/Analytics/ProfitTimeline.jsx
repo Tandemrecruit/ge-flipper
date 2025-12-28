@@ -1,9 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { useFlipTracker } from '../../hooks/useFlipTracker';
 
-export default function ProfitTimeline() {
-  const { flipLog } = useFlipTracker();
+export default function ProfitTimeline({ flipLog }) {
   const [viewMode, setViewMode] = useState('daily'); // 'daily', 'weekly', 'monthly'
   const [chartType, setChartType] = useState('line'); // 'line' or 'bar'
 

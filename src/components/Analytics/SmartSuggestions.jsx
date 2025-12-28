@@ -1,12 +1,10 @@
 import React, { useMemo } from 'react';
-import { useFlipTracker } from '../../hooks/useFlipTracker';
 import { useItems } from '../../hooks/useItems';
 import { usePriceHistory } from '../../hooks/usePriceHistory';
 import { formatNumber } from '../../utils/formatters';
 import { computeSuggestionScore, isEligibleForSuggestion, generateSuggestionReason } from '../../utils/suggestions';
 
-export default function SmartSuggestions({ prices, volumes, mapping, onTrackFlip, onAssignToSlot }) {
-  const { itemAnalytics, flipLog } = useFlipTracker();
+export default function SmartSuggestions({ prices, volumes, mapping, flipLog, itemAnalytics, onTrackFlip, onAssignToSlot }) {
   const { getVolatility, getPriceTrend } = usePriceHistory(prices, mapping, flipLog);
   
   // Add null checks to prevent crashes

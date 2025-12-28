@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { useFlipTracker } from '../../hooks/useFlipTracker';
 import { useItems } from '../../hooks/useItems';
 import { usePriceHistory } from '../../hooks/usePriceHistory';
 import { formatNumber } from '../../utils/formatters';
@@ -11,8 +10,7 @@ import { computeSuggestionScore } from '../../utils/suggestions';
  * Compares which items the scoring system would have suggested vs actual flip outcomes
  * to measure how well the new accuracy improvements are working.
  */
-export default function SuggestionEvaluation({ prices, volumes, mapping }) {
-  const { flipLog, itemAnalytics } = useFlipTracker();
+export default function SuggestionEvaluation({ prices, volumes, mapping, flipLog, itemAnalytics }) {
   const { getVolatility } = usePriceHistory(prices, mapping, flipLog);
   const { items } = useItems(prices, volumes, mapping);
   

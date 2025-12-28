@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import { useBuyLimitTracker } from '../../hooks/useBuyLimitTracker';
-import { useFlipTracker } from '../../hooks/useFlipTracker';
-import { usePrices } from '../../hooks/usePrices';
 
-export default function BuyLimitTracker() {
-  const { flipLog } = useFlipTracker();
-  const { mapping } = usePrices();
+export default function BuyLimitTracker({ flipLog, mapping }) {
   const { buyLimits, getRemainingLimit, updatePurchased, getItemsWithLimits } = useBuyLimitTracker(flipLog, mapping);
   const [selectedItem, setSelectedItem] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
