@@ -1,0 +1,24 @@
+{
+  "name": "ge-flipper",
+  "version": "1.0.0",
+  "description": "OSRS Grand Exchange Flipping Dashboard",
+  "scripts": {
+    "dev": "vite",
+    "proxy": "node proxy.js",
+    "start": "concurrently \"npm run proxy\" \"npm run dev\"",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "recharts": "^3.6.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.1",
+    "concurrently": "^8.2.2",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "vite": "^5.1.0"
+  }
+}
