@@ -1,7 +1,8 @@
 import React from 'react';
 import { formatGp } from '../../utils/formatters';
+import { REFRESH_INTERVALS } from '../../utils/constants';
 
-export default function StatusBar({ lastUpdate, apiSource, usingSampleData, itemsCount, availableGold, onRefresh, loading }) {
+export default function StatusBar({ lastUpdate, apiSource, usingSampleData, itemsCount, availableGold, onRefresh, loading, autoRefreshInterval }) {
   if (!lastUpdate) return null;
 
   return (
@@ -25,7 +26,11 @@ export default function StatusBar({ lastUpdate, apiSource, usingSampleData, item
       {!usingSampleData && (
         <>
           <span style={{ margin: '0 8px', color: '#6b5a42' }}>•</span>
-          <span style={{ color: '#b8a88a' }}>Auto-refresh 60s</span>
+          <span style={{ color: '#b8a88a' }}>
+            {autoRefreshInterval === 0 
+              ? 'Auto-refresh Disabled'
+              : `Auto-refresh ${REFRESH_INTERVALS.find(o => o.value === autoRefreshInterval)?.label.toLowerCase() || '1 minute'}`}
+          </span>
         </>
       )}
       {onRefresh && (

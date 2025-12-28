@@ -10,7 +10,8 @@ export default function Filters({
   itemsCount, 
   onRefresh, 
   loading,
-  availableGold: externalGold
+  availableGold: externalGold,
+  autoRefreshInterval
 }) {
   const { searchTerm, minProfit, minRoi, availableGold, showSafeOnly } = filters;
 
@@ -117,6 +118,7 @@ export default function Filters({
         usingSampleData={usingSampleData}
         itemsCount={itemsCount}
         availableGold={externalGold || availableGold}
+        autoRefreshInterval={autoRefreshInterval}
       />
       
       {showSafeOnly && (

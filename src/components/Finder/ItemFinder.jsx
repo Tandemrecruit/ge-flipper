@@ -18,7 +18,8 @@ export default function ItemFinder({
   onAssignToSlot,
   availableSlots,
   availableGold,
-  onAvailableGoldChange
+  onAvailableGoldChange,
+  autoRefreshInterval
 }) {
   const [filters, setFilters] = useState({
     minProfit: 1000,
@@ -101,6 +102,7 @@ export default function ItemFinder({
         onRefresh={onRefresh}
         loading={loading}
         availableGold={availableGold}
+        autoRefreshInterval={autoRefreshInterval}
       />
 
       {error && (

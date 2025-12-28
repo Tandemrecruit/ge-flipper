@@ -1,14 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
-const REFRESH_INTERVALS = [
-  { label: 'Disabled', value: 0 },
-  { label: '10 seconds', value: 10000 },
-  { label: '30 seconds', value: 30000 },
-  { label: '1 minute', value: 60000 },
-  { label: '2 minutes', value: 120000 },
-  { label: '5 minutes', value: 300000 },
-  { label: '10 minutes', value: 600000 }
-];
+import { REFRESH_INTERVALS } from '../../utils/constants';
 
 const STORAGE_KEY = 'ge-auto-refresh-interval';
 

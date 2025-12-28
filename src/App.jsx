@@ -64,6 +64,7 @@ export default function GEFlipper() {
           availableSlots={slots}
           availableGold={availableGold}
           onAvailableGoldChange={setAvailableGold}
+          autoRefreshInterval={autoRefreshInterval}
         />
       )}
 
