@@ -10,8 +10,17 @@ A real-time flipping dashboard for Old School RuneScape with tax calculations, v
 - 📈 **Flip tracker** with expected vs actual profit
 - 🛡️ **Safe flip filtering** based on volume tiers
 - 💾 **Local storage** persistence for tracked flips and slots
-- 📉 **Analytics dashboard** with ROI tracking and profit timelines
+- 📉 **Analytics dashboard** with multiple views:
+  - ROI Dashboard - Track return on investment metrics
+  - Profit Timeline - Visualize profit over time
+  - Price History - Historical price charts
+  - Smart Suggestions - AI-powered flip recommendations
+  - Accuracy Analysis - Evaluate prediction accuracy
+  - Buy Limits - Track buy limit utilization
+  - Competition Analysis - Analyze market competition
 - 🎯 **Smart suggestions** based on historical performance
+- ⚙️ **Auto-refresh settings** - Configurable price update intervals (10s to 10min or disabled)
+- 📄 **CSV import/export** - Export flips and slots to CSV, import from CSV files (supports drag & drop)
 
 ## Prerequisites
 
@@ -43,7 +52,15 @@ npm run proxy
 
 # Build for production
 npm run build
+
+# Preview production build
+npm run preview
 ```
+
+**Production Build Requirements:**
+- Set `VITE_PROXY_URL` environment variable to your proxy server URL
+- Example: `VITE_PROXY_URL=https://your-proxy-domain.com/api`
+- The proxy must be accessible from your production domain
 
 ## How It Works
 
@@ -55,7 +72,8 @@ The OSRS Wiki API recommends identifying your application via User-Agent headers
 4. Returns the response with CORS headers
 
 ### Dashboard
-The dashboard tries the proxy first (fast 3s timeout), then falls back to direct API calls if the proxy isn't running. If both fail, it loads sample data so you can still explore the UI.
+- **Development**: Tries the proxy first (fast 3s timeout), then falls back to direct API calls if the proxy isn't running. If both fail, it loads sample data so you can still explore the UI.
+- **Production**: Requires `VITE_PROXY_URL` environment variable to be set. The proxy is mandatory in production builds to ensure proper User-Agent headers are sent to the API.
 
 ## Data Sources
 
