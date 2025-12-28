@@ -92,43 +92,54 @@ export const useBuyLimitTracker = (flipLog, mapping) => {
       const now = new Date();
       const cutoffTime = now.getTime() - FOUR_HOURS_MS;
 
+      // Group flips by itemId and recompute purchases from scratch
+      const purchasesByItem = {};
+      
       flipLog.forEach(flip => {
         if (!flip.itemId || flip.status !== 'complete' || !flip.buyPrice) return;
 
-        // Create record on-demand if it doesn't exist
-        if (!updated[flip.itemId]) {
-          const item = mapping && mapping[flip.itemId];
-          updated[flip.itemId] = {
-            itemId: flip.itemId,
-            itemName: item?.name || flip.itemName || '',
-            buyLimit: item?.limit || 0,
-            purchases: []
-          };
-        }
-
-        const limit = updated[flip.itemId];
-        
-        // Ensure purchases array exists
-        if (!Array.isArray(limit.purchases)) {
-          limit.purchases = [];
-        }
-        
-        // Clean up purchases older than 4 hours
-        limit.purchases = limit.purchases.filter(p => {
-          const purchaseTime = new Date(p.timestamp).getTime();
-          return purchaseTime > cutoffTime;
-        });
-
-        // Add this purchase with its timestamp
         const flipTimestamp = flip.date ? new Date(flip.date).toISOString() : now.toISOString();
         const flipTime = new Date(flipTimestamp).getTime();
         
-        // Only add if the flip was within the last 4 hours
+        // Only include flips within the last 4 hours (rolling window)
         if (flipTime > cutoffTime) {
-          limit.purchases.push({
+          if (!purchasesByItem[flip.itemId]) {
+            purchasesByItem[flip.itemId] = [];
+          }
+          purchasesByItem[flip.itemId].push({
             timestamp: flipTimestamp,
             quantity: flip.quantity || 0
           });
+        }
+      });
+
+      // Update only items that already exist in prev (gate initialization)
+      Object.keys(purchasesByItem).forEach(itemId => {
+        // Only update if it already exists in prev - don't create new entries from mapping
+        if (prev[itemId]) {
+          updated[itemId] = {
+            ...prev[itemId],
+            // Recompute purchases from scratch, don't add on top
+            purchases: purchasesByItem[itemId]
+          };
+        }
+      });
+
+      // Clean up purchases for all items in prev (rolling 4-hour window)
+      Object.keys(prev).forEach(itemId => {
+        if (!purchasesByItem[itemId] && prev[itemId]) {
+          // Item exists in prev but no new purchases - just clean up old ones
+          if (Array.isArray(prev[itemId].purchases)) {
+            const cleanedPurchases = prev[itemId].purchases.filter(p => {
+              const purchaseTime = new Date(p.timestamp).getTime();
+              return purchaseTime > cutoffTime;
+            });
+            // Only keep the item if it still has purchases or if we want to preserve the record
+            updated[itemId] = {
+              ...prev[itemId],
+              purchases: cleanedPurchases
+            };
+          }
         }
       });
 
