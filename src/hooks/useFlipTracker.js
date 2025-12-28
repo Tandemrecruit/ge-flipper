@@ -12,8 +12,11 @@ export const useFlipTracker = () => {
         const hasTargetSell = flip.suggestedSell && flip.suggestedSell > 0;
         const needsRecalc = hasTargetSell && (flip.expectedProfit === 0 || flip.expectedProfit == null) && flip.buyPrice && flip.quantity;
         if (needsRecalc) {
-          // Expected profit = (expectedSellPrice * quantity) - (quantity * buyPrice)
-          flip.expectedProfit = (flip.suggestedSell * flip.quantity) - (flip.quantity * flip.buyPrice);
+          // Expected profit = (netSellPrice - buyPrice) * quantity
+          // where netSellPrice = suggestedSell - tax
+          const taxPerItem = calculateTax(flip.suggestedSell);
+          const netSell = flip.suggestedSell - taxPerItem;
+          flip.expectedProfit = (netSell - flip.buyPrice) * flip.quantity;
         }
         return flip;
       });
@@ -224,8 +227,11 @@ export const useFlipTracker = () => {
     let expectedTotal;
     if (hasTargetSellPrice) {
       // Always calculate expected profit when a target sell price is provided
-      // Expected profit = (expectedSellPrice * quantity) - (quantity * buyPrice)
-      expectedTotal = (suggestedSell * qty) - (qty * buy);
+      // Expected profit = (netSellPrice - buyPrice) * quantity
+      // where netSellPrice = suggestedSell - tax
+      const taxPerItem = calculateTax(suggestedSell);
+      const netSell = suggestedSell - taxPerItem;
+      expectedTotal = (netSell - buy) * qty;
       console.log('Expected profit calculated:', { suggestedSell, buy, qty, expectedTotal });
     } else {
       // Manual entry without target sell price - use actual profit or 0
@@ -287,8 +293,11 @@ export const useFlipTracker = () => {
       
       let expectedProfit = flip.expectedProfit;
       if (soldQty !== null && flip.suggestedSell) {
-        // Expected profit = (expectedSellPrice * quantity) - (quantity * buyPrice)
-        expectedProfit = (flip.suggestedSell * qty) - (qty * flip.buyPrice);
+        // Expected profit = (netSellPrice - buyPrice) * quantity
+        // where netSellPrice = suggestedSell - tax
+        const taxPerItem = calculateTax(flip.suggestedSell);
+        const netSell = flip.suggestedSell - taxPerItem;
+        expectedProfit = (netSell - flip.buyPrice) * qty;
       }
       return {
         ...flip,
@@ -318,8 +327,12 @@ export const useFlipTracker = () => {
             const restoredQty = flip.quantity + deletedFlip.quantity;
             
             // Recalculate expected profit for the restored quantity
-            // Expected profit = (expectedSellPrice * quantity) - (quantity * buyPrice)
-            const restoredExpectedProfit = ((flip.suggestedSell || 0) * restoredQty) - (restoredQty * flip.buyPrice);
+            // Expected profit = (netSellPrice - buyPrice) * quantity
+            // where netSellPrice = suggestedSell - tax
+            const suggestedSell = flip.suggestedSell || 0;
+            const taxPerItem = calculateTax(suggestedSell);
+            const netSell = suggestedSell - taxPerItem;
+            const restoredExpectedProfit = (netSell - flip.buyPrice) * restoredQty;
             
             return {
               ...flip,
@@ -359,8 +372,12 @@ export const useFlipTracker = () => {
       
       const splitTax = splitTaxPerItem * splitQty;
       const splitActualProfit = (netSell - originalFlip.buyPrice) * splitQty;
-      // Expected profit = (expectedSellPrice * quantity) - (quantity * buyPrice)
-      const splitExpectedProfit = ((originalFlip.suggestedSell || grossSell) * splitQty) - (splitQty * originalFlip.buyPrice);
+      // Expected profit = (netSellPrice - buyPrice) * quantity
+      // where netSellPrice = suggestedSell - tax
+      const targetSell = originalFlip.suggestedSell || grossSell;
+      const expectedTaxPerItem = calculateTax(targetSell);
+      const expectedNetSell = targetSell - expectedTaxPerItem;
+      const splitExpectedProfit = (expectedNetSell - originalFlip.buyPrice) * splitQty;
       
       // Calculate total sell prices (per-item * quantity)
       const totalGrossSell = grossSell * splitQty;
@@ -380,8 +397,12 @@ export const useFlipTracker = () => {
         date: new Date().toISOString() // Use current date for the split sale
       };
       
-      // Expected profit = (expectedSellPrice * quantity) - (quantity * buyPrice)
-      const remainingExpectedProfit = ((originalFlip.suggestedSell || 0) * remainingQty) - (remainingQty * originalFlip.buyPrice);
+      // Expected profit = (netSellPrice - buyPrice) * quantity
+      // where netSellPrice = suggestedSell - tax
+      const suggestedSell = originalFlip.suggestedSell || 0;
+      const taxPerItem = calculateTax(suggestedSell);
+      const netSell = suggestedSell - taxPerItem;
+      const remainingExpectedProfit = (netSell - originalFlip.buyPrice) * remainingQty;
       
       const updatedOriginal = {
         ...originalFlip,
@@ -423,8 +444,11 @@ export const useFlipTracker = () => {
         // For manual entries (no suggestedSell), use actual profit if available, otherwise 0
         // This prevents manual entries from showing huge negative expected values
         if (suggestedSell > 0) {
-          // Expected profit = (expectedSellPrice * quantity) - (quantity * buyPrice)
-          newFlip.expectedProfit = (suggestedSell * qty) - (qty * buy);
+          // Expected profit = (netSellPrice - buyPrice) * quantity
+          // where netSellPrice = suggestedSell - tax
+          const taxPerItem = calculateTax(suggestedSell);
+          const netSell = suggestedSell - taxPerItem;
+          newFlip.expectedProfit = (netSell - buy) * qty;
         } else {
           // Manual entry without suggested prices - use actual profit or 0
           // We'll calculate this after we know the actual profit
@@ -495,7 +519,11 @@ export const useFlipTracker = () => {
         const suggestedSell = newFlip.suggestedSell || 0;
         
         if (suggestedSell > 0) {
-          newFlip.expectedProfit = (suggestedSell * qty) - (qty * buy);
+          // Expected profit = (netSellPrice - buyPrice) * quantity
+          // where netSellPrice = suggestedSell - tax
+          const taxPerItem = calculateTax(suggestedSell);
+          const netSell = suggestedSell - taxPerItem;
+          newFlip.expectedProfit = (netSell - buy) * qty;
         } else {
           // If clearing suggestedSell, use actual profit if available, otherwise 0
           newFlip.expectedProfit = newFlip.actualProfit || 0;

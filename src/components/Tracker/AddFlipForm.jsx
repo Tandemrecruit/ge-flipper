@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { formatGp } from '../../utils/formatters';
+import { calculateTax } from '../../utils/calculations';
 
 export default function AddFlipForm({ newFlip, setNewFlip, onSave, onCancel }) {
   const isManualEntry = !newFlip.itemId;
@@ -13,8 +14,11 @@ export default function AddFlipForm({ newFlip, setNewFlip, onSave, onCancel }) {
     const qty = parseInt(newFlip.quantity) || 1;
     
     if (targetSell > 0 && buy > 0) {
-      // Expected profit = (expectedSellPrice * quantity) - (quantity * buyPrice)
-      return (targetSell * qty) - (qty * buy);
+      // Expected profit = (netSellPrice - buyPrice) * quantity
+      // where netSellPrice = targetSell - tax
+      const taxPerItem = calculateTax(targetSell);
+      const netSell = targetSell - taxPerItem;
+      return (netSell - buy) * qty;
     }
     return 0;
   }, [isManualEntry, newFlip.buyPrice, newFlip.suggestedSell, newFlip.quantity, newFlip.expectedProfit]);
