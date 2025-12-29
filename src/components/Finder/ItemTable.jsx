@@ -27,8 +27,8 @@ export default function ItemTable({ items, loading, sortBy, sortAsc, onSort, onI
               <th className="th-cell" onClick={() => onSort('spreadPercent')} style={{ padding: '16px 14px', textAlign: 'right', borderBottom: '2px solid #6b5a42', color: '#f5ead6', fontSize: 14, fontWeight: 600 }}>
                 Spread<SortIcon field="spreadPercent" sortBy={sortBy} sortAsc={sortAsc} />
               </th>
-              <th className="th-cell" onClick={() => onSort('netProfit')} style={{ padding: '16px 14px', textAlign: 'right', borderBottom: '2px solid #6b5a42', color: '#f5ead6', fontSize: 14, fontWeight: 600 }}>
-                Profit<SortIcon field="netProfit" sortBy={sortBy} sortAsc={sortAsc} />
+              <th className="th-cell" onClick={() => onSort('suggestedProfit')} style={{ padding: '16px 14px', textAlign: 'right', borderBottom: '2px solid #6b5a42', color: '#f5ead6', fontSize: 14, fontWeight: 600 }}>
+                Exp Profit<SortIcon field="suggestedProfit" sortBy={sortBy} sortAsc={sortAsc} />
               </th>
               <th style={{ padding: '16px 14px', textAlign: 'right', borderBottom: '2px solid #6b5a42', color: '#93c5fd', fontSize: 14, fontWeight: 600 }}>Suggested Buy</th>
               <th style={{ padding: '16px 14px', textAlign: 'right', borderBottom: '2px solid #6b5a42', color: '#fde68a', fontSize: 14, fontWeight: 600 }}>Suggested Sell</th>

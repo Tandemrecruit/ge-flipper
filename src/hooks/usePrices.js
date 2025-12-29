@@ -132,14 +132,16 @@ export const usePrices = (autoRefreshInterval = 60000) => {
 
     const fetchPromise = (async () => {
       try {
-        // Fetch both latest (for instant buy/sell) and 5m averages (for realistic pricing)
-        const [latestResult, avgResult] = await Promise.all([
+        // Fetch latest (instant), 5m averages (near-term realism), and 1h averages (stability/trend checks)
+        const [latestResult, avgResult, hourResult] = await Promise.all([
           fetchApi('latest'),
-          fetchApi('5m')
+          fetchApi('5m'),
+          fetchApi('1h')
         ]);
 
         const priceData = latestResult.data;
         const avgData = avgResult.data;
+        const hourData = hourResult.data;
         const priceSource = latestResult.source;
 
         if (!priceData || !priceData.data || Object.keys(priceData.data).length === 0) {
@@ -158,6 +160,22 @@ export const usePrices = (autoRefreshInterval = 60000) => {
                 avgLowPrice: avgInfo.avgLowPrice || null,
                 highPriceVolume: avgInfo.highPriceVolume || 0,
                 lowPriceVolume: avgInfo.lowPriceVolume || 0
+              };
+            }
+          }
+        }
+
+
+        // Merge 1h average data into prices (for stability/trend heuristics)
+        if (hourData && hourData.data) {
+          for (const [id, hourInfo] of Object.entries(hourData.data)) {
+            if (mergedPrices[id]) {
+              mergedPrices[id] = {
+                ...mergedPrices[id],
+                avgHighPrice1h: hourInfo.avgHighPrice || null,
+                avgLowPrice1h: hourInfo.avgLowPrice || null,
+                highPriceVolume1h: hourInfo.highPriceVolume || 0,
+                lowPriceVolume1h: hourInfo.lowPriceVolume || 0
               };
             }
           }
@@ -221,7 +239,8 @@ export const usePrices = (autoRefreshInterval = 60000) => {
       
       // Fallback: estimate from 5m data (5m volume × 288 = approx daily)
       console.warn('24h volumes unavailable, falling back to 5m estimation');
-      const fiveMinResult = await fetchApi('5m');
+      const fiveMinResult = await          fetchApi('5m'),
+          fetchApi('1h');
       
       if (fiveMinResult.data && fiveMinResult.data.data) {
         const volumeMap = normalizeDataMap(fiveMinResult.data.data, (v) => {

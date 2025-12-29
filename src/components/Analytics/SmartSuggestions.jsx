@@ -31,7 +31,7 @@ export default function SmartSuggestions({ prices, volumes, mapping, flipLog, it
 
       // Helper: Check if item has acceptable freshness for suggestions
       const hasFreshData = (item) => {
-        return item.freshnessStatus === 'fresh' || item.freshnessStatus === 'ok';
+        return item.freshnessStatus === 'fresh';
       };
       
       // Helper: Get volatility data for an item
@@ -60,7 +60,6 @@ export default function SmartSuggestions({ prices, volumes, mapping, flipLog, it
         
         // Downgrade for staleness
         if (item.freshnessStatus === 'stale') confidence = 'low';
-        else if (item.freshnessStatus === 'ok' && confidence === 'high') confidence = 'medium';
         
         // Downgrade for volatility
         const vol = getItemVolatility(item);

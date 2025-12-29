@@ -26,7 +26,7 @@ export default function ItemFinder({
     minRoi: 1,
     searchTerm: '',
     showSafeOnly: true,
-    sortBy: 'profit',
+    sortBy: 'suggestedProfit',
     sortAsc: false,
     availableGold: availableGold || ''
   });
@@ -42,7 +42,7 @@ export default function ItemFinder({
     });
   }, [availableGold]);
   const [selectedItem, setSelectedItem] = useState(null);
-  const [sortBy, setSortBy] = useState('profit');
+  const [sortBy, setSortBy] = useState('suggestedProfit');
   const [sortAsc, setSortAsc] = useState(false);
 
   const { filteredItems } = useItems(prices, volumes, mapping, { ...filters, sortBy, sortAsc });

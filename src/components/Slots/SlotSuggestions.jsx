@@ -9,7 +9,7 @@ export default function SlotSuggestions({ prices, volumes, mapping, availableGol
     minRoi: 1,
     searchTerm: '',
     availableGold: '', // Don't filter by gold here, we'll do it manually
-    sortBy: 'profit',
+    sortBy: 'suggestedProfit',
     sortAsc: false
   });
 

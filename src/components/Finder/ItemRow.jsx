@@ -2,6 +2,8 @@ import React from 'react';
 import { formatNumber, formatGp } from '../../utils/formatters';
 
 export default function ItemRow({ item, idx, onItemClick, onTrackFlip, onAssignToSlot, availableSlots }) {
+  const profitPerHour = item.estimatedProfitPerHour != null ? Math.round(item.estimatedProfitPerHour) : null;
+
   return (
     <tr 
       className="item-row"
@@ -13,32 +15,25 @@ export default function ItemRow({ item, idx, onItemClick, onTrackFlip, onAssignT
       }}
     >
       <td style={{ padding: '14px', borderBottom: '1px solid rgba(90, 74, 53, 0.4)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <img 
-            src={`https://oldschool.runescape.wiki/images/${encodeURIComponent(item.icon?.replace(/ /g, '_') || item.name.replace(/ /g, '_'))}.png`}
-            alt=""
-            style={{ width: 36, height: 36, objectFit: 'contain' }}
-            onError={(e) => { e.target.style.display = 'none'; }}
-          />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <img src={item.icon} alt={item.name} style={{ width: 30, height: 30 }} />
           <div>
-            <div style={{ fontWeight: 600, fontFamily: '"Cinzel", serif', fontSize: 15, color: '#f5ead6' }}>{item.name}</div>
-            <div style={{ display: 'flex', gap: 6, marginTop: 4, flexWrap: 'wrap' }}>
-              {item.isSafeFlip && <span className="tag tag-safe">Safe</span>}
-              {item.isVeryHighVolume ? <span className="tag tag-fastvol">Fast</span> : item.isHighVolume && <span className="tag tag-highvol">Liquid</span>}
-              {item.members && <span className="tag tag-members">P2P</span>}
+            <div style={{ fontWeight: 600, color: '#f5ead6', fontSize: 16 }}>{item.name}</div>
+            <div style={{ fontSize: 12, color: item.isSafeFlip ? '#4ade80' : '#9a8a6a', marginTop: 2 }}>
+              {item.isSafeFlip ? '✅ SAFE' : (item.isManipulated ? '⚠️ risk' : '•')}
+              {' '}
+              {item.freshnessStatus === 'fresh' ? 'fresh' : 'stale'}
+              {' • '}
+              {item.liquidityTier}
             </div>
           </div>
         </div>
       </td>
       <td style={{ padding: '14px', textAlign: 'right', borderBottom: '1px solid rgba(90, 74, 53, 0.4)' }}>
-        <div style={{ color: item.isVeryHighVolume ? '#e9d5ff' : item.isHighVolume ? '#d8b4fe' : '#b8a88a' }}>
-          {formatNumber(item.volume)}/day
+        <div style={{ fontWeight: 600, color: '#f5ead6', fontSize: 16 }}>
+          {formatNumber(item.volume)}
         </div>
-        <div style={{ 
-          fontSize: 12, 
-          marginTop: 2,
-          color: item.buyLimit >= 1000 ? '#6ee7a0' : item.buyLimit >= 100 ? '#fcd34d' : '#fca5a5'
-        }}>
+        <div style={{ fontSize: 12, marginTop: 2, color: item.buyLimit >= 1000 ? '#6ee7a0' : item.buyLimit >= 100 ? '#fcd34d' : '#fca5a5' }}>
           Limit: {item.buyLimit?.toLocaleString() || '?'}
         </div>
       </td>
@@ -57,10 +52,17 @@ export default function ItemRow({ item, idx, onItemClick, onTrackFlip, onAssignT
         </div>
       </td>
       <td style={{ padding: '14px', textAlign: 'right', borderBottom: '1px solid rgba(90, 74, 53, 0.4)' }}>
-        <span className={item.netProfit > 0 ? 'profit-positive' : 'profit-negative'} style={{ fontSize: 16, fontWeight: 600 }}>
-          +{formatGp(item.netProfit)}
+        <span className={item.suggestedProfit > 0 ? 'profit-positive' : 'profit-negative'} style={{ fontSize: 16, fontWeight: 600 }}>
+          +{formatGp(item.suggestedProfit)}
         </span>
-        <div style={{ fontSize: 12, color: '#9a8a6a', marginTop: 2 }}>-{formatGp(item.tax)} tax</div>
+        <div style={{ fontSize: 12, color: '#9a8a6a', marginTop: 2 }}>
+          -{formatGp(item.suggestedTax)} tax • buffer {formatGp(item.slippageBufferGp)}
+        </div>
+        {profitPerHour != null && (
+          <div style={{ fontSize: 11, color: '#7c6a4d', marginTop: 2 }}>
+            ~{formatGp(profitPerHour)}/hr @ {item.recommendedQty.toLocaleString()} qty
+          </div>
+        )}
       </td>
       <td style={{ padding: '14px', textAlign: 'right', borderBottom: '1px solid rgba(90, 74, 53, 0.4)', color: '#93c5fd', fontWeight: 600 }}>
         {formatGp(item.suggestedBuy)}
@@ -93,8 +95,8 @@ export default function ItemRow({ item, idx, onItemClick, onTrackFlip, onAssignT
               }}
             >
               <option value="">+ Slot</option>
-              {availableSlots.map(s => (
-                <option key={s.id} value={s.id}>#{s.id}</option>
+              {availableSlots.map(slot => (
+                <option key={slot.id} value={slot.id}>S{slot.id}</option>
               ))}
             </select>
           )}
