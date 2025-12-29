@@ -113,13 +113,21 @@ export const useBuyLimitTracker = (flipLog, mapping) => {
         }
       });
 
-      // Update only items that already exist in prev (gate initialization)
+      // Update or create entries for items with purchases
       Object.keys(purchasesByItem).forEach(itemId => {
-        // Only update if it already exists in prev - don't create new entries from mapping
         if (prev[itemId]) {
+          // Update existing entry
           updated[itemId] = {
             ...prev[itemId],
-            // Recompute purchases from scratch, don't add on top
+            purchases: purchasesByItem[itemId]
+          };
+        } else if (mapping && mapping[itemId]) {
+          // Create new entry from mapping data (auto-track from flip)
+          const item = mapping[itemId];
+          updated[itemId] = {
+            itemId: item.id,
+            itemName: item.name,
+            buyLimit: item.limit || 0,
             purchases: purchasesByItem[itemId]
           };
         }
