@@ -184,13 +184,11 @@ export const useBuyLimitTracker = (flipLog, mapping) => {
     const now = new Date();
     const cutoffTime = now.getTime() - FOUR_HOURS_MS;
     
-    // Ensure purchases array exists
-    if (!Array.isArray(limit.purchases)) {
-      limit.purchases = [];
-    }
-    
+    // Use empty array as fallback without mutating state
+    const purchases = Array.isArray(limit.purchases) ? limit.purchases : [];
+
     // Filter purchases to only those within the last 4 hours
-    const recentPurchases = limit.purchases.filter(p => {
+    const recentPurchases = purchases.filter(p => {
       const purchaseTime = new Date(p.timestamp).getTime();
       return purchaseTime > cutoffTime;
     });
