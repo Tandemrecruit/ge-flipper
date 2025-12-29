@@ -3,7 +3,10 @@ import { formatNumber, formatGp } from '../../utils/formatters';
 import { getItemIconUrl } from '../../utils/iconUrl';
 
 export default function ItemRow({ item, idx, onItemClick, onTrackFlip, onAssignToSlot, availableSlots }) {
-  const profitPerHour = item.estimatedProfitPerHour != null ? Math.round(item.estimatedProfitPerHour) : null;
+  const profitPerHourSrc = item.competitionAdjustedProfitPerHour != null
+    ? item.competitionAdjustedProfitPerHour
+    : item.estimatedProfitPerHour;
+  const profitPerHour = profitPerHourSrc != null ? Math.round(profitPerHourSrc) : null;
   const iconUrl = getItemIconUrl(item);
 
   return (
@@ -36,6 +39,12 @@ export default function ItemRow({ item, idx, onItemClick, onTrackFlip, onAssignT
               {item.freshnessStatus === 'fresh' ? 'fresh' : 'stale'}
               {' • '}
               {item.liquidityTier}
+              {item.competitionLevel ? (
+                <>
+                  {' • '}
+                  comp {String(item.competitionLevel).toLowerCase()}
+                </>
+              ) : null}
             </div>
           </div>
         </div>
@@ -69,6 +78,11 @@ export default function ItemRow({ item, idx, onItemClick, onTrackFlip, onAssignT
         <div style={{ fontSize: 12, color: '#9a8a6a', marginTop: 2 }}>
           -{formatGp(item.suggestedTax)} tax • buffer {formatGp(item.slippageBufferGp)}
         </div>
+        {typeof item.competitionAdjustedProfit === 'number' && item.competitionAdjustedProfit !== item.suggestedProfit && (
+          <div style={{ fontSize: 11, color: '#7c6a4d', marginTop: 2 }}>
+            Adj: +{formatGp(item.competitionAdjustedProfit)} (comp)
+          </div>
+        )}
         {profitPerHour != null && (
           <div style={{ fontSize: 11, color: '#7c6a4d', marginTop: 2 }}>
             ~{formatGp(profitPerHour)}/hr @ {item.recommendedQty.toLocaleString()} qty

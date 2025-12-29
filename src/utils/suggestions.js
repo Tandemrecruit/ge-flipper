@@ -11,12 +11,13 @@
 
 // Weight configuration for scoring factors
 const WEIGHTS = {
-  profitability: 0.32,
-  roi: 0.15,
-  liquidity: 0.22,
-  freshness: 0.11,
+  profitability: 0.30,
+  roi: 0.14,
+  liquidity: 0.20,
+  freshness: 0.10,
   volatility: 0.10,
-  marginHealth: 0.10
+  marginHealth: 0.08,
+  competition: 0.08
 };
 
 const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
@@ -38,23 +39,36 @@ export const computeSuggestionScore = (item, volatilityData = null, options = {}
     liquidity: 0,
     freshness: 0,
     volatility: 0,
-    marginHealth: 0
+    marginHealth: 0,
+    competition: 0
   };
 
   // 1) Profitability (0-100)
   // Prefer a conservative throughput-aware metric if available.
+  // If we have a competition-adjusted estimate, use it.
   const profitPerHourCeiling = options.profitPerHourCeiling || 500_000; // 500k gp/hr = "excellent" baseline
   const profitPerItemCeiling = options.profitCeiling || 10_000;         // 10k gp/item = excellent per-item
 
-  if (typeof item.estimatedProfitPerHour === 'number' && Number.isFinite(item.estimatedProfitPerHour)) {
-    breakdown.profitability = Math.min(100, (item.estimatedProfitPerHour / profitPerHourCeiling) * 100);
+  const profitPerHour = (typeof item.competitionAdjustedProfitPerHour === 'number' && Number.isFinite(item.competitionAdjustedProfitPerHour))
+    ? item.competitionAdjustedProfitPerHour
+    : item.estimatedProfitPerHour;
+
+  const profitPerItem = (typeof item.competitionAdjustedProfit === 'number' && Number.isFinite(item.competitionAdjustedProfit))
+    ? item.competitionAdjustedProfit
+    : item.suggestedProfit;
+
+  if (typeof profitPerHour === 'number' && Number.isFinite(profitPerHour)) {
+    breakdown.profitability = Math.min(100, (profitPerHour / profitPerHourCeiling) * 100);
   } else {
-    breakdown.profitability = Math.min(100, (item.suggestedProfit / profitPerItemCeiling) * 100);
+    breakdown.profitability = Math.min(100, (profitPerItem / profitPerItemCeiling) * 100);
   }
 
   // 2) ROI (0-100)
   const roiCeiling = options.roiCeiling || 10; // 10%+ ROI is excellent
-  breakdown.roi = Math.min(100, (item.suggestedROI / roiCeiling) * 100);
+  const roiValue = (typeof item.competitionAdjustedROI === 'number' && Number.isFinite(item.competitionAdjustedROI))
+    ? item.competitionAdjustedROI
+    : item.suggestedROI;
+  breakdown.roi = Math.min(100, (roiValue / roiCeiling) * 100);
 
   // 3) Liquidity (0-100)
   // Log-scale volume/limit so low-limit high-value items don't get nuked by tiers.
@@ -104,17 +118,29 @@ export const computeSuggestionScore = (item, volatilityData = null, options = {}
     default: breakdown.marginHealth = 50;
   }
 
+  // 7) Competition (0-100): lower competition = higher score
+  // If the item already computed a competitionScore, use it. Otherwise estimate weakly from volume/spread.
+  const compScore = (typeof item.competitionScore === 'number' && Number.isFinite(item.competitionScore))
+    ? item.competitionScore
+    : clamp(((Math.log10((item.volume || 0) + 1) / 5) * 60) + ((6 - (item.avgSpreadPercent || item.spreadPercent || 0)) * 10), 0, 100);
+  breakdown.competition = clamp(100 - compScore, 0, 100);
+
   let totalScore =
     breakdown.profitability * weights.profitability +
     breakdown.roi * weights.roi +
     breakdown.liquidity * weights.liquidity +
     breakdown.freshness * weights.freshness +
     breakdown.volatility * weights.volatility +
-    breakdown.marginHealth * weights.marginHealth;
+    breakdown.marginHealth * weights.marginHealth +
+    breakdown.competition * (weights.competition || 0);
 
   // Pressure penalty (reduces false positives on one-sided books)
   if (item.pressureStatus === 'one-sided') totalScore -= 10;
   else if (item.pressureStatus === 'tilted') totalScore -= 5;
+
+  // Competition penalty: high competition + thin margins tends to get undercut into the red
+  if (compScore >= 75 && item.marginHealth !== 'healthy') totalScore -= 8;
+  else if (compScore >= 60 && item.marginHealth === 'risky') totalScore -= 6;
 
   // Manipulation penalty
   if (item.isManipulated) totalScore -= 20;
@@ -130,6 +156,7 @@ export const computeSuggestionScore = (item, volatilityData = null, options = {}
   if (item.freshnessStatus === 'stale') confidence = 'low';
   if (volatilityData?.volatilityStatus === 'extreme') confidence = 'low';
   if (item.isManipulated) confidence = 'low';
+  if (compScore >= 80 && item.marginHealth !== 'healthy') confidence = 'low';
 
   return {
     score: Math.round(totalScore),

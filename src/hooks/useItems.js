@@ -11,6 +11,68 @@ const parseGold = (raw) => {
   return Number.isFinite(n) && n > 0 ? n : null;
 };
 
+// Competition model (0-100, higher = more contested).
+// Used to (a) surface a label and (b) compute a conservative "competition-adjusted" profit estimate.
+// Heuristics combine:
+// - Liquidity/activity: daily volume + last-5m activity
+// - Tightness: lower spread % generally means more active price competition
+// - Attraction: higher ROI, easier capital requirement
+// - Participation: how many full buy limits fit in daily volume
+const computeCompetitionScore = ({
+  volume,
+  fiveMinVolume,
+  avgSpreadPercent,
+  suggestedROI,
+  suggestedBuy,
+  buyLimit,
+  stalenessMinutes
+}) => {
+  const v = Math.max(0, volume || 0);
+  const v5 = Math.max(0, fiveMinVolume || 0);
+  const spreadPct = Math.max(0, avgSpreadPercent || 0);
+  const roi = Math.max(0, suggestedROI || 0);
+  const buy = Math.max(0, suggestedBuy || 0);
+  const limit = Math.max(0, buyLimit || 0);
+
+  // Daily volume (log-scaled)
+  const volumeScore = clamp((Math.log10(v + 1) / 5) * 100, 0, 100); // ~100 at 100k/day
+
+  // Last 5m activity (log-scaled, 0..100)
+  const v5Score = clamp((Math.log10(v5 + 1) / 2) * 100, 0, 100); // ~100 at 100/5m
+
+  // Tight spreads -> higher competition
+  // 1% => 100, 6%+ => 0
+  const tightSpreadScore = clamp(((6 - spreadPct) / 5) * 100, 0, 100);
+
+  // ROI attracts flippers, but cap the effect (2% is baseline after tax+friction)
+  const roiAttractionScore = clamp(((roi - 2) / 8) * 100, 0, 100);
+
+  // Capital barrier reduces competition (cheap items are easier to swarm)
+  // 10k => ~100, 10m => ~0 (log10 scale)
+  const capitalEaseScore = clamp(((7 - Math.log10(buy + 10)) / 3) * 100, 0, 100);
+
+  // How many full limits fit in daily volume (more => more participants can cycle the item)
+  const limitsPerDay = (v > 0 && limit > 0) ? (v / limit) : 0;
+  const limitsPerDayScore = clamp((Math.log10(limitsPerDay + 1) / 2) * 100, 0, 100); // ~100 at 100 limits/day
+
+  // Very fresh updates tend to correlate with a contested market
+  const freshnessCompetitionScore = Number.isFinite(stalenessMinutes)
+    ? (stalenessMinutes <= 5 ? 100 : stalenessMinutes <= 15 ? 70 : stalenessMinutes <= 30 ? 40 : 10)
+    : 30;
+
+  // Weighted blend
+  const score =
+    volumeScore * 0.22 +
+    v5Score * 0.18 +
+    tightSpreadScore * 0.18 +
+    roiAttractionScore * 0.14 +
+    capitalEaseScore * 0.12 +
+    limitsPerDayScore * 0.10 +
+    freshnessCompetitionScore * 0.06;
+
+  return clamp(score, 0, 100);
+};
+
 export const useItems = (prices, volumes, mapping, filters = {}) => {
   const {
     minProfit = 0,
@@ -140,6 +202,45 @@ export const useItems = (prices, volumes, mapping, filters = {}) => {
         const oldestTime = (highTime && lowTime) ? Math.min(highTime, lowTime) : (highTime || lowTime);
         const stalenessMinutes = oldestTime ? (now - oldestTime) / 1000 / 60 : Infinity;
 
+        // --- Competition model ---
+        // This is a heuristic attempt to estimate how contested the item is.
+        // It also produces a conservative "competition-adjusted" price pair that assumes
+        // you will have to concede some margin to stay on top of the queue.
+        const competitionScore = computeCompetitionScore({
+          volume,
+          fiveMinVolume,
+          avgSpreadPercent,
+          suggestedROI,
+          suggestedBuy,
+          buyLimit,
+          stalenessMinutes
+        });
+
+        const competitionLevel =
+          competitionScore >= 70 ? 'High' :
+          competitionScore >= 45 ? 'Medium' :
+          'Low';
+
+        const competitionFactor = competitionScore / 100;
+        // Concession per-side (gp) – higher competition means you likely need to move closer to mid.
+        // Bounded so we never cross the spread.
+        const maxConcession = Math.floor((suggestedSell - suggestedBuy - 1) / 2);
+        let competitionConcessionGp = 0;
+        if (maxConcession > 0) {
+          const baseConcession = Math.round(avgSpread * (0.05 + 0.15 * competitionFactor)); // 5%..20% of avg spread
+          const cheapItemBump = suggestedBuy < 5_000 ? 2 : suggestedBuy < 50_000 ? 1 : 0;
+          competitionConcessionGp = clamp(Math.max(1, baseConcession + cheapItemBump), 1, maxConcession);
+        }
+
+        const competitionAdjustedBuy = competitionConcessionGp > 0 ? (suggestedBuy + competitionConcessionGp) : suggestedBuy;
+        const competitionAdjustedSell = competitionConcessionGp > 0 ? (suggestedSell - competitionConcessionGp) : suggestedSell;
+        const competitionAdjustedTax = calculateTax(competitionAdjustedSell);
+        const competitionAdjustedNetProceeds = competitionAdjustedSell - competitionAdjustedTax;
+        const competitionAdjustedProfit = competitionAdjustedNetProceeds - competitionAdjustedBuy;
+        const competitionAdjustedROI = (competitionAdjustedProfit / competitionAdjustedBuy) * 100;
+        const competitionSlippageBufferGp = Math.max(10, Math.floor(competitionAdjustedBuy * 0.001));
+        const competitionAdjustedEdgeProfit = competitionAdjustedProfit - competitionSlippageBufferGp;
+
         // Activity & manipulation heuristics
         const marketIsActive = (fiveMinVolume >= 10) || ((bid < 100_000) ? (volume > 5_000) : (volume > 30));
 
@@ -203,14 +304,19 @@ export const useItems = (prices, volumes, mapping, filters = {}) => {
 
         let recommendedQty = defaultQtyCap;
         if (parsedGold) {
-          const maxAffordable = Math.floor(parsedGold / suggestedBuy);
-          const diversifyCap = Math.floor((parsedGold * 0.3) / suggestedBuy);
+          // Use a more conservative cost if competition is expected to force us higher.
+          const effectiveBuy = competitionAdjustedBuy || suggestedBuy;
+          const maxAffordable = Math.floor(parsedGold / effectiveBuy);
+          const diversifyCap = Math.floor((parsedGold * 0.3) / effectiveBuy);
           recommendedQty = Math.min(recommendedQty, maxAffordable, diversifyCap);
         }
         recommendedQty = Math.max(1, recommendedQty);
 
         const estimatedTotalCost = recommendedQty * suggestedBuy;
         const estimatedTotalProfit = recommendedQty * suggestedProfit;
+
+        const competitionAdjustedTotalCost = recommendedQty * competitionAdjustedBuy;
+        const competitionAdjustedTotalProfit = recommendedQty * competitionAdjustedProfit;
 
         // Rough round-trip time estimate based on daily volume (very conservative, assumes ~50/50 split buy vs sell)
         const estimatedRoundTripMinutes = volume > 0
@@ -219,6 +325,10 @@ export const useItems = (prices, volumes, mapping, filters = {}) => {
 
         const estimatedProfitPerHour = estimatedRoundTripMinutes
           ? (estimatedTotalProfit / (estimatedRoundTripMinutes / 60))
+          : null;
+
+        const competitionAdjustedProfitPerHour = estimatedRoundTripMinutes
+          ? (competitionAdjustedTotalProfit / (estimatedRoundTripMinutes / 60))
           : null;
 
         return {
@@ -258,6 +368,18 @@ export const useItems = (prices, volumes, mapping, filters = {}) => {
           slippageBufferGp,
           edgeProfit,
 
+          // Competition
+          competitionScore,
+          competitionLevel,
+          competitionConcessionGp,
+          competitionAdjustedBuy,
+          competitionAdjustedSell,
+          competitionAdjustedTax,
+          competitionAdjustedProfit,
+          competitionAdjustedROI,
+          competitionSlippageBufferGp,
+          competitionAdjustedEdgeProfit,
+
           // Signals
           fiveMinVolume,
           pressure,
@@ -277,8 +399,11 @@ export const useItems = (prices, volumes, mapping, filters = {}) => {
           recommendedQty,
           estimatedTotalCost,
           estimatedTotalProfit,
+          competitionAdjustedTotalCost,
+          competitionAdjustedTotalProfit,
           estimatedRoundTripMinutes,
-          estimatedProfitPerHour
+          estimatedProfitPerHour,
+          competitionAdjustedProfitPerHour
         };
       })
       .filter(Boolean);
@@ -296,7 +421,7 @@ export const useItems = (prices, volumes, mapping, filters = {}) => {
 
         if (term && !item.name.toLowerCase().includes(term)) return false;
 
-        if (parsedGold != null && item.suggestedBuy > parsedGold) return false;
+        if (parsedGold != null && (item.competitionAdjustedBuy || item.suggestedBuy) > parsedGold) return false;
 
         return true;
       })

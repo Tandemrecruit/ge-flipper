@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import { useItems } from '../../hooks/useItems';
-import { calculateTax } from '../../utils/calculations';
 import { getItemIconUrl } from '../../utils/iconUrl';
 
 export default function CompetitionAnalysis({ prices, volumes, mapping }) {
@@ -8,47 +7,21 @@ export default function CompetitionAnalysis({ prices, volumes, mapping }) {
 
   const analysis = useMemo(() => {
     const analyzed = items
-      .filter(item => item.isSafeFlip && item.netProfit > 0)
+      .filter(item => item.isSafeFlip && item.suggestedProfit > 0)
       .map(item => {
-        // Estimate competition based on volume and spread
-        // Higher volume + lower spread = more competition
-        // Lower volume + higher spread = less competition
-        
         const dailyVolume = item.volume || 0;
-        const spread = item.spreadPercent || 0;
-        
-        // Competition score: 0-100 (higher = more competition)
-        // Based on volume tier and spread tightness
-        let competitionScore = 0;
-        
-        if (item.isVeryHighVolume) {
-          competitionScore += 40; // High volume = more flippers
-        } else if (item.isHighVolume) {
-          competitionScore += 25;
-        } else {
-          competitionScore += 10;
-        }
-        
-        // Tight spreads indicate active competition
-        if (spread < 2.5) {
-          competitionScore += 30;
-        } else if (spread < 3.5) {
-          competitionScore += 20;
-        } else if (spread < 4.5) {
-          competitionScore += 10;
-        }
-        
-        // Estimate number of flippers (rough heuristic)
-        // Assume each flipper buys ~1% of daily volume on average
-        const estimatedFlippers = Math.max(1, Math.round(dailyVolume / (item.buyLimit || 1000) * 0.01));
-        
-        // Profitability after competition
-        const competitionFactor = competitionScore / 100;
-        const adjustedProfit = item.netProfit * (1 - competitionFactor * 0.3); // Up to 30% reduction
-        
-        let competitionLevel = 'Low';
-        if (competitionScore >= 60) competitionLevel = 'High';
-        else if (competitionScore >= 40) competitionLevel = 'Medium';
+        const competitionScore = typeof item.competitionScore === 'number' ? item.competitionScore : 0;
+        const competitionLevel = item.competitionLevel || 'Unknown';
+
+        // Estimate number of flippers (very rough): log-scale limits/day.
+        const buyLimit = item.buyLimit || 0;
+        const limitsPerDay = (dailyVolume > 0 && buyLimit > 0) ? (dailyVolume / buyLimit) : 0;
+        const estimatedFlippers = Math.max(1, Math.round(Math.log10(limitsPerDay + 1) * 8));
+
+        // Conservative profit under competition pressure.
+        const adjustedProfit = (typeof item.competitionAdjustedProfit === 'number')
+          ? item.competitionAdjustedProfit
+          : item.suggestedProfit;
         
         return {
           ...item,
@@ -56,7 +29,7 @@ export default function CompetitionAnalysis({ prices, volumes, mapping }) {
           competitionLevel,
           estimatedFlippers,
           adjustedProfit,
-          opportunity: adjustedProfit > item.netProfit * 0.7 ? 'Good' : adjustedProfit > item.netProfit * 0.5 ? 'Fair' : 'Poor'
+          opportunity: adjustedProfit >= item.suggestedProfit * 0.8 ? 'Good' : adjustedProfit >= item.suggestedProfit * 0.6 ? 'Fair' : 'Poor'
         };
       })
       .sort((a, b) => {
@@ -111,7 +84,7 @@ export default function CompetitionAnalysis({ prices, volumes, mapping }) {
         🎯 Competition Analysis
       </h3>
       <p style={{ color: '#d4a84b', fontSize: 13, marginBottom: 16 }}>
-        Estimated competition levels based on volume and spread patterns. Lower competition = better opportunities.
+        Competition is estimated from liquidity/activity (daily + 5m volume), spread tightness, ROI attraction, buy-limit turnover, and update freshness.
       </p>
 
       <div style={{ display: 'grid', gap: 12 }}>
@@ -183,11 +156,11 @@ export default function CompetitionAnalysis({ prices, volumes, mapping }) {
                 {formatCurrency(item.adjustedProfit)}
               </div>
               <div style={{ 
-                color: item.netProfit > item.adjustedProfit ? '#f44336' : '#4caf50', 
+                color: item.suggestedProfit > item.adjustedProfit ? '#f44336' : '#4caf50', 
                 fontSize: 11, 
                 marginTop: 4 
               }}>
-                vs {formatCurrency(item.netProfit)} base
+                vs {formatCurrency(item.suggestedProfit)} expected
               </div>
               <div style={{ 
                 color: getOpportunityColor(item.opportunity), 
