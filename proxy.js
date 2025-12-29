@@ -34,7 +34,7 @@ app.get('/api/:endpoint', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`\nðŸŽ® OSRS GE Proxy running on http://localhost:${PORT}`);
+  console.log(`\n🎮 OSRS GE Proxy running on http://localhost:${PORT}`);
   console.log(`   Proxying requests to ${API_BASE}`);
   console.log(`   User-Agent: ${USER_AGENT}\n`);
 });
