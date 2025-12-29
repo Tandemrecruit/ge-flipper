@@ -96,7 +96,7 @@ export const useBuyLimitTracker = (flipLog, mapping) => {
       const purchasesByItem = {};
       
       flipLog.forEach(flip => {
-        if (!flip.itemId || flip.status !== 'complete' || !flip.buyPrice) return;
+        if (!flip.itemId || (flip.status !== 'complete' && flip.status !== 'pending') || !flip.buyPrice) return;
 
         const flipTimestamp = flip.date ? new Date(flip.date).toISOString() : now.toISOString();
         const flipTime = new Date(flipTimestamp).getTime();

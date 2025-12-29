@@ -41,7 +41,16 @@ export default function FlipTracker() {
   };
 
   const handleAddSaleConfirm = (flipId, sellPrice, soldQty, isNet) => {
-    updateFlipSale(flipId, sellPrice, soldQty, isNet);
+    const flip = flipLog.find(f => f.id === flipId);
+
+    // If partial sale (soldQty provided and less than total), use splitFlip
+    if (soldQty !== null && flip && soldQty < flip.quantity) {
+      splitFlip(flipId, soldQty, sellPrice, isNet);
+    } else {
+      // Full sale - use standard update
+      updateFlipSale(flipId, sellPrice, soldQty, isNet);
+    }
+
     setAddSaleModalFlip(null);
   };
 

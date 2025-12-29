@@ -211,9 +211,9 @@ export const useFlipTracker = () => {
       buyPrice: buy,
       sellPrice: totalGrossSell,
       netSellPrice: totalNetSell,
-      suggestedSell: (typeof newFlip.suggestedSell === 'number' && !isNaN(newFlip.suggestedSell)) 
-        ? newFlip.suggestedSell 
-        : (newFlip.suggestedSell != null && newFlip.suggestedSell !== '' 
+      suggestedSell: (typeof newFlip.suggestedSell === 'number' && !isNaN(newFlip.suggestedSell))
+        ? newFlip.suggestedSell
+        : (newFlip.suggestedSell != null && newFlip.suggestedSell !== ''
           ? (isNaN(parseFloat(newFlip.suggestedSell)) ? 0 : parseFloat(newFlip.suggestedSell))
           : 0),
       suggestedBuy: typeof newFlip.suggestedBuy === 'number' ? newFlip.suggestedBuy : (parseFloat(newFlip.suggestedBuy) || 0),
@@ -222,7 +222,8 @@ export const useFlipTracker = () => {
       actualProfit: actualProfit,
       tax,
       status: enteredSell ? 'complete' : 'pending',
-      date: new Date().toISOString()
+      date: new Date().toISOString(),
+      soldDate: enteredSell ? new Date().toISOString() : null
     };
     
     setFlipLog(prev => [flip, ...prev]);
@@ -268,7 +269,8 @@ export const useFlipTracker = () => {
         expectedProfit,
         actualProfit,
         tax,
-        status: 'complete'
+        status: 'complete',
+        soldDate: new Date().toISOString()
       };
     }));
   };
@@ -355,7 +357,8 @@ export const useFlipTracker = () => {
         tax: splitTax,
         status: 'complete',
         splitFrom: originalFlip.id,
-        date: new Date().toISOString() // Use current date for the split sale
+        date: originalFlip.date, // Preserve original purchase date for buy limit tracking
+        soldDate: new Date().toISOString() // Track when sale occurred
       };
       
       // Expected profit = (netSellPrice - buyPrice) * quantity
