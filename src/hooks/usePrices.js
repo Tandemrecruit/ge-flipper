@@ -239,8 +239,7 @@ export const usePrices = (autoRefreshInterval = 60000) => {
       
       // Fallback: estimate from 5m data (5m volume × 288 = approx daily)
       console.warn('24h volumes unavailable, falling back to 5m estimation');
-      const fiveMinResult = await          fetchApi('5m'),
-          fetchApi('1h');
+      const fiveMinResult = await fetchApi('5m');
       
       if (fiveMinResult.data && fiveMinResult.data.data) {
         const volumeMap = normalizeDataMap(fiveMinResult.data.data, (v) => {
