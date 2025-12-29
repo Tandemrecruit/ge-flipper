@@ -364,9 +364,9 @@ export const useFlipTracker = () => {
       // Expected profit = (netSellPrice - buyPrice) * quantity
       // where netSellPrice = suggestedSell - tax
       const suggestedSell = originalFlip.suggestedSell || 0;
-      const taxPerItem = calculateTax(suggestedSell);
-      const netSell = suggestedSell - taxPerItem;
-      const remainingExpectedProfit = (netSell - originalFlip.buyPrice) * remainingQty;
+      const remainingTaxPerItem = calculateTax(suggestedSell);
+      const remainingNetSell = suggestedSell - remainingTaxPerItem;
+      const remainingExpectedProfit = (remainingNetSell - originalFlip.buyPrice) * remainingQty;
       
       const updatedOriginal = {
         ...originalFlip,
