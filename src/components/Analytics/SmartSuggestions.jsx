@@ -3,6 +3,7 @@ import { useItems } from '../../hooks/useItems';
 import { usePriceHistory } from '../../hooks/usePriceHistory';
 import { formatNumber } from '../../utils/formatters';
 import { computeSuggestionScore, isEligibleForSuggestion, generateSuggestionReason } from '../../utils/suggestions';
+import { getItemIconUrl } from '../../utils/iconUrl';
 
 export default function SmartSuggestions({ prices, volumes, mapping, flipLog, itemAnalytics, onTrackFlip, onAssignToSlot }) {
   const { getVolatility, getPriceTrend } = usePriceHistory(prices, mapping, flipLog);
@@ -276,7 +277,7 @@ export default function SmartSuggestions({ prices, volumes, mapping, flipLog, it
             <div style={{ flex: 1, minWidth: 200 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
                 <img 
-                  src={`https://oldschool.runescape.wiki/images/${encodeURIComponent(item.icon?.replace(/ /g, '_') || item.name.replace(/ /g, '_'))}.png`}
+                  src={getItemIconUrl(item)}
                   alt={item.name}
                   style={{ width: 32, height: 32, objectFit: 'contain' }}
                   onError={(e) => { e.target.style.display = 'none'; }}

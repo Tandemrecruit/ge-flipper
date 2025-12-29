@@ -1,5 +1,6 @@
 import React from 'react';
 import { formatNumber, formatGp } from '../../utils/formatters';
+import { getItemIconUrl } from '../../utils/iconUrl';
 
 export default function SlotCard({ slot, onUpdateQuantity, onChangeType, onClear, onTrackFlip }) {
   if (!slot) return null;
@@ -27,7 +28,7 @@ export default function SlotCard({ slot, onUpdateQuantity, onChangeType, onClear
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
             <img 
-              src={`https://oldschool.runescape.wiki/images/${encodeURIComponent((slot.item.icon || slot.item.name || 'Unknown').replace(/ /g, '_'))}.png`}
+              src={getItemIconUrl(slot.item)}
               alt=""
               style={{ width: 32, height: 32, objectFit: 'contain' }}
               onError={(e) => { e.target.style.display = 'none'; }}

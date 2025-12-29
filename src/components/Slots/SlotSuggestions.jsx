@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { useItems } from '../../hooks/useItems';
 import { formatGp, formatNumber } from '../../utils/formatters';
+import { getItemIconUrl } from '../../utils/iconUrl';
 
 export default function SlotSuggestions({ prices, volumes, mapping, availableGold, slots, slotStats, onAssignToSlot, onTabChange }) {
   const { filteredItems } = useItems(prices || {}, volumes || {}, mapping || {}, {
@@ -243,7 +244,7 @@ export default function SlotSuggestions({ prices, volumes, mapping, availableGol
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <img 
-              src={`https://oldschool.runescape.wiki/images/${encodeURIComponent(item.icon?.replace(/ /g, '_') || item.name.replace(/ /g, '_'))}.png`}
+              src={getItemIconUrl(item)}
               alt="" style={{ width: 28, height: 28 }}
               onError={(e) => { e.target.style.display = 'none'; }}
             />

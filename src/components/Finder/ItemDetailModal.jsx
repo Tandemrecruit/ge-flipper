@@ -1,6 +1,7 @@
 import React from 'react';
 import { formatNumber, formatGp } from '../../utils/formatters';
 import { calculateTax } from '../../utils/calculations';
+import { getItemIconUrl } from '../../utils/iconUrl';
 
 export default function ItemDetailModal({ item, onClose, onTrackFlip, onAssignToSlot, availableSlots, availableGold }) {
   if (!item) return null;
@@ -22,7 +23,7 @@ export default function ItemDetailModal({ item, onClose, onTrackFlip, onAssignTo
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: 20 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
             <img 
-              src={`https://oldschool.runescape.wiki/images/${encodeURIComponent(item.icon?.replace(/ /g, '_') || item.name.replace(/ /g, '_'))}.png`}
+              src={getItemIconUrl(item)}
               alt=""
               style={{ width: 48, height: 48, objectFit: 'contain' }}
               onError={(e) => { e.target.style.display = 'none'; }}

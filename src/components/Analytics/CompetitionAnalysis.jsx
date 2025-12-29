@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { useItems } from '../../hooks/useItems';
 import { calculateTax } from '../../utils/calculations';
+import { getItemIconUrl } from '../../utils/iconUrl';
 
 export default function CompetitionAnalysis({ prices, volumes, mapping }) {
   const { items } = useItems(prices, volumes, mapping);
@@ -131,7 +132,7 @@ export default function CompetitionAnalysis({ prices, volumes, mapping }) {
           >
             <div>
               <img 
-                src={`https://oldschool.runescape.wiki/images/${encodeURIComponent(item.icon?.replace(/ /g, '_') || item.name.replace(/ /g, '_'))}.png`}
+                src={getItemIconUrl(item)}
                 alt={item.name}
                 style={{ width: 40, height: 40, objectFit: 'contain' }}
                 onError={(e) => { e.target.style.display = 'none'; }}

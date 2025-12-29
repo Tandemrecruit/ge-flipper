@@ -1,8 +1,10 @@
 import React from 'react';
 import { formatNumber, formatGp } from '../../utils/formatters';
+import { getItemIconUrl } from '../../utils/iconUrl';
 
 export default function ItemRow({ item, idx, onItemClick, onTrackFlip, onAssignToSlot, availableSlots }) {
   const profitPerHour = item.estimatedProfitPerHour != null ? Math.round(item.estimatedProfitPerHour) : null;
+  const iconUrl = getItemIconUrl(item);
 
   return (
     <tr 
@@ -16,7 +18,16 @@ export default function ItemRow({ item, idx, onItemClick, onTrackFlip, onAssignT
     >
       <td style={{ padding: '14px', borderBottom: '1px solid rgba(90, 74, 53, 0.4)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <img src={item.icon} alt={item.name} style={{ width: 30, height: 30 }} />
+          <img
+            src={iconUrl}
+            alt={item.name}
+            style={{ width: 30, height: 30 }}
+            onError={(e) => {
+              // As a last resort, fall back to wiki guess from name
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = getItemIconUrl(null, item.name);
+            }}
+          />
           <div>
             <div style={{ fontWeight: 600, color: '#f5ead6', fontSize: 16 }}>{item.name}</div>
             <div style={{ fontSize: 12, color: item.isSafeFlip ? '#4ade80' : '#9a8a6a', marginTop: 2 }}>
