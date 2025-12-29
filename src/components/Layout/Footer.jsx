@@ -8,9 +8,9 @@ export default function Footer() {
       padding: 24,
       color: '#b8a88a',
       fontFamily: '"Crimson Text", serif',
-      fontSize: 14
+      fontSize: 18
     }}>
-      <div style={{ height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6b5a42', fontSize: 14, letterSpacing: 8 }}>→ → →</div>
+      <div style={{ height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6b5a42', fontSize: 18, letterSpacing: 8 }}>→ → →</div>
       <p style={{ margin: '12px 0' }}>
         Data from OSRS Wiki Prices API • Tax: 2% (max 5M) • Prices update every minute
       </p>

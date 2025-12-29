@@ -29,7 +29,7 @@ export default function ItemDetailModal({ item, onClose, onTrackFlip, onAssignTo
               onError={(e) => { e.target.style.display = 'none'; }}
             />
             <div>
-              <h2 style={{ margin: 0, fontSize: 24, fontWeight: 700 }} className="gold-glow">
+              <h2 style={{ margin: 0, fontSize: 26, fontWeight: 700 }} className="gold-glow">
                 {item.name}
               </h2>
               <div style={{ display: 'flex', gap: 8, marginTop: 4, flexWrap: 'wrap' }}>
@@ -39,7 +39,7 @@ export default function ItemDetailModal({ item, onClose, onTrackFlip, onAssignTo
                 <span style={{ 
                   padding: '3px 10px', 
                   borderRadius: 3, 
-                  fontSize: 12, 
+                  fontSize: 15, 
                   fontWeight: 600,
                   background: item.buyLimit >= 1000 ? 'rgba(74, 222, 128, 0.25)' : item.buyLimit >= 100 ? 'rgba(251, 191, 36, 0.25)' : 'rgba(248, 113, 113, 0.25)',
                   color: item.buyLimit >= 1000 ? '#6ee7a0' : item.buyLimit >= 100 ? '#fcd34d' : '#fca5a5',
@@ -49,7 +49,7 @@ export default function ItemDetailModal({ item, onClose, onTrackFlip, onAssignTo
                 </span>
               </div>
               {item.buyLimit && item.buyLimit < 100 && (
-                <div style={{ marginTop: 8, fontSize: 13, color: '#fca5a5', fontFamily: '"Crimson Text", serif' }}>
+                <div style={{ marginTop: 8, fontSize: 16, color: '#fca5a5', fontFamily: '"Crimson Text", serif' }}>
                   ⚡ Low buy limit — max {item.buyLimit} items per 4 hours
                 </div>
               )}
@@ -71,7 +71,7 @@ export default function ItemDetailModal({ item, onClose, onTrackFlip, onAssignTo
             <div className="detail-label">Low</div>
             <div className="detail-value">{formatGp(item.buyPrice)}</div>
             {item.avgBuyPrice && (
-              <div style={{ fontSize: 13, color: '#93c5fd', marginTop: 4 }}>
+              <div style={{ fontSize: 16, color: '#93c5fd', marginTop: 4 }}>
                 5m avg: {formatGp(item.avgBuyPrice)}
               </div>
             )}
@@ -80,7 +80,7 @@ export default function ItemDetailModal({ item, onClose, onTrackFlip, onAssignTo
             <div className="detail-label">High</div>
             <div className="detail-value">{formatGp(item.sellPrice)}</div>
             {item.avgSellPrice && (
-              <div style={{ fontSize: 13, color: '#fde68a', marginTop: 4 }}>
+              <div style={{ fontSize: 16, color: '#fde68a', marginTop: 4 }}>
                 5m avg: {formatGp(item.avgSellPrice)}
               </div>
             )}
@@ -88,14 +88,14 @@ export default function ItemDetailModal({ item, onClose, onTrackFlip, onAssignTo
           <div className="detail-box">
             <div className="detail-label">Suggested Buy</div>
             <div className="detail-value" style={{ color: '#93c5fd' }}>{formatGp(item.suggestedBuy)}</div>
-            <div style={{ fontSize: 12, color: '#8b7355', marginTop: 4 }}>
+            <div style={{ fontSize: 15, color: '#8b7355', marginTop: 4 }}>
               {item.avgBuyPrice ? 'Based on 5m avg' : 'Based on instant price'}
             </div>
           </div>
           <div className="detail-box">
             <div className="detail-label">Suggested Sell</div>
             <div className="detail-value" style={{ color: '#fde68a' }}>{formatGp(item.suggestedSell)}</div>
-            <div style={{ fontSize: 12, color: '#8b7355', marginTop: 4 }}>
+            <div style={{ fontSize: 15, color: '#8b7355', marginTop: 4 }}>
               {item.avgSellPrice ? 'Based on 5m avg' : 'Based on instant price'}
             </div>
           </div>
@@ -109,10 +109,10 @@ export default function ItemDetailModal({ item, onClose, onTrackFlip, onAssignTo
           textAlign: 'center'
         }}>
           <div className="detail-label">Net Profit Per Item (After 2% Tax)</div>
-          <div className="detail-value profit-positive" style={{ fontSize: 28 }}>
+          <div className="detail-value profit-positive" style={{ fontSize: 30 }}>
             +{formatGp(item.suggestedProfit)}
           </div>
-          <div style={{ fontSize: 14, color: '#8b7355', marginTop: 8 }}>
+          <div style={{ fontSize: 18, color: '#8b7355', marginTop: 8 }}>
             Sell {formatGp(item.sellPrice)} × 0.98 = {formatGp(item.netProceeds)} net − {formatGp(item.buyPrice)} buy = {formatGp(item.netProfit)} profit
           </div>
         </div>
@@ -128,27 +128,27 @@ export default function ItemDetailModal({ item, onClose, onTrackFlip, onAssignTo
           <div className="detail-label">Spread Analysis</div>
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 20, marginTop: 8 }}>
             <div>
-              <div style={{ fontSize: 24, fontWeight: 700 }} className={`margin-${item.marginHealth}`}>
+              <div style={{ fontSize: 26, fontWeight: 700 }} className={`margin-${item.marginHealth}`}>
                 {item.spreadPercent.toFixed(2)}%
               </div>
-              <div style={{ fontSize: 12, color: '#8b7355' }}>Current Spread</div>
+              <div style={{ fontSize: 15, color: '#8b7355' }}>Current Spread</div>
             </div>
-            <div style={{ fontSize: 24, color: '#5a4a35' }}>vs</div>
+            <div style={{ fontSize: 26, color: '#5a4a35' }}>vs</div>
             <div>
-              <div style={{ fontSize: 24, fontWeight: 700, color: '#8b7355' }}>
+              <div style={{ fontSize: 26, fontWeight: 700, color: '#8b7355' }}>
                 2.04%
               </div>
-              <div style={{ fontSize: 12, color: '#8b7355' }}>Break-even</div>
+              <div style={{ fontSize: 15, color: '#8b7355' }}>Break-even</div>
             </div>
-            <div style={{ fontSize: 24, color: '#5a4a35' }}>→</div>
+            <div style={{ fontSize: 26, color: '#5a4a35' }}>→</div>
             <div>
-              <div style={{ fontSize: 24, fontWeight: 700 }} className={`margin-${item.marginHealth}`}>
+              <div style={{ fontSize: 26, fontWeight: 700 }} className={`margin-${item.marginHealth}`}>
                 +{item.marginBuffer.toFixed(2)}%
               </div>
-              <div style={{ fontSize: 12, color: '#8b7355' }}>Buffer</div>
+              <div style={{ fontSize: 15, color: '#8b7355' }}>Buffer</div>
             </div>
           </div>
-          <div style={{ marginTop: 12, fontSize: 13, color: '#8b7355' }}>
+          <div style={{ marginTop: 12, fontSize: 16, color: '#8b7355' }}>
             {item.isVeryHighVolume ? (
               <span>⚡ <strong>Very fast</strong> item — 2.5%+ spread acceptable</span>
             ) : item.isHighVolume ? (
@@ -185,14 +185,14 @@ export default function ItemDetailModal({ item, onClose, onTrackFlip, onAssignTo
           <button 
             className="btn"
             onClick={() => { onTrackFlip(item); onClose(); }}
-            style={{ flex: 1, padding: '12px', fontSize: 16, background: 'linear-gradient(180deg, #2d4a35 0%, #1d3225 100%)' }}
+            style={{ flex: 1, padding: '12px', fontSize: 20, background: 'linear-gradient(180deg, #2d4a35 0%, #1d3225 100%)' }}
           >
             📊 Track This Flip
           </button>
           {availableSlots && availableSlots.length > 0 && (
             <select
               className="input-field"
-              style={{ padding: '12px', fontSize: 14 }}
+              style={{ padding: '12px', fontSize: 18 }}
               defaultValue=""
               onChange={(e) => {
                 if (e.target.value && onAssignToSlot) {
@@ -259,7 +259,7 @@ export default function ItemDetailModal({ item, onClose, onTrackFlip, onAssignTo
         </div>
 
         <div style={{ marginTop: 20, padding: 16, background: 'rgba(0,0,0,0.3)', border: '1px solid #3d3225' }}>
-          <div style={{ fontSize: 14, fontFamily: '"Crimson Text", serif', color: '#8b7355' }}>
+          <div style={{ fontSize: 18, fontFamily: '"Crimson Text", serif', color: '#8b7355' }}>
             <strong style={{ color: '#e8d5b0' }}>💡 Flip Strategy:</strong> Place a buy offer at <span style={{ color: '#60a5fa' }}>{formatGp(item.suggestedBuy)}</span> and 
             wait for it to fill. Then immediately list at <span style={{ color: '#fbbf24' }}>{formatGp(item.suggestedSell)}</span>. 
             Expected profit: <span className="profit-positive">+{formatGp(item.suggestedProfit)}</span> per item after tax.
@@ -267,7 +267,7 @@ export default function ItemDetailModal({ item, onClose, onTrackFlip, onAssignTo
         </div>
 
         {item.highTime && item.lowTime && (
-          <div style={{ marginTop: 16, fontSize: 12, color: '#6b5a42', textAlign: 'center', fontFamily: '"Crimson Text", serif' }}>
+          <div style={{ marginTop: 16, fontSize: 15, color: '#6b5a42', textAlign: 'center', fontFamily: '"Crimson Text", serif' }}>
             Last high: {item.highTime.toLocaleString()} • Last low: {item.lowTime.toLocaleString()}
           </div>
         )}

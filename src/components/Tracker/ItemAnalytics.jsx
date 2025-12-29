@@ -60,8 +60,8 @@ export default function ItemAnalytics({ itemAnalytics, topPerformers }) {
 
     return (
       <div style={{ marginTop: 16, padding: 12, background: 'rgba(90, 74, 53, 0.2)', borderRadius: 4 }}>
-        <div style={{ fontSize: 12, fontWeight: 600, color: '#8b7355', marginBottom: 8 }}>Price Analysis</div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12, fontSize: 13 }}>
+        <div style={{ fontSize: 15, fontWeight: 600, color: '#8b7355', marginBottom: 8 }}>Price Analysis</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12, fontSize: 20 }}>
           <div>
             <div style={{ color: '#93c5fd' }}>Best Buy: {formatGp(bestBuyPrice)}</div>
             <div style={{ color: '#f87171' }}>Worst Buy: {formatGp(worstBuyPrice)}</div>
@@ -124,7 +124,7 @@ export default function ItemAnalytics({ itemAnalytics, topPerformers }) {
       {activeTab === 'most' && (
         <div>
           <div style={{ marginBottom: 24 }}>
-            <h3 style={{ color: '#60a5fa', marginBottom: 12, fontSize: 18 }}>Top Profit Makers</h3>
+            <h3 style={{ color: '#60a5fa', marginBottom: 12, fontSize: 20 }}>Top Profit Makers</h3>
             <div className="gold-border" style={{ overflow: 'auto' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 600 }}>
                 <thead>
@@ -146,7 +146,7 @@ export default function ItemAnalytics({ itemAnalytics, topPerformers }) {
           </div>
 
           <div style={{ marginBottom: 24 }}>
-            <h3 style={{ color: '#60a5fa', marginBottom: 12, fontSize: 18 }}>Best ROI (3+ flips)</h3>
+            <h3 style={{ color: '#60a5fa', marginBottom: 12, fontSize: 20 }}>Best ROI (3+ flips)</h3>
             <div className="gold-border" style={{ overflow: 'auto' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 600 }}>
                 <thead>
@@ -168,7 +168,7 @@ export default function ItemAnalytics({ itemAnalytics, topPerformers }) {
           </div>
 
           <div>
-            <h3 style={{ color: '#60a5fa', marginBottom: 12, fontSize: 18 }}>Highest Win Rate (3+ flips)</h3>
+            <h3 style={{ color: '#60a5fa', marginBottom: 12, fontSize: 20 }}>Highest Win Rate (3+ flips)</h3>
             <div className="gold-border" style={{ overflow: 'auto' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 600 }}>
                 <thead>
@@ -194,7 +194,7 @@ export default function ItemAnalytics({ itemAnalytics, topPerformers }) {
       {activeTab === 'least' && (
         <div>
           <div style={{ marginBottom: 24 }}>
-            <h3 style={{ color: '#f87171', marginBottom: 12, fontSize: 18 }}>Biggest Losses</h3>
+            <h3 style={{ color: '#f87171', marginBottom: 12, fontSize: 20 }}>Biggest Losses</h3>
             <div className="gold-border" style={{ overflow: 'auto' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 600 }}>
                 <thead>
@@ -216,7 +216,7 @@ export default function ItemAnalytics({ itemAnalytics, topPerformers }) {
           </div>
 
           <div>
-            <h3 style={{ color: '#f87171', marginBottom: 12, fontSize: 18 }}>Worst ROI</h3>
+            <h3 style={{ color: '#f87171', marginBottom: 12, fontSize: 20 }}>Worst ROI</h3>
             <div className="gold-border" style={{ overflow: 'auto' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 600 }}>
                 <thead>
@@ -245,7 +245,7 @@ export default function ItemAnalytics({ itemAnalytics, topPerformers }) {
 
       {activeTab === 'prices' && (
         <div>
-          <h3 style={{ color: '#60a5fa', marginBottom: 12, fontSize: 18 }}>Price Effectiveness by Item</h3>
+          <h3 style={{ color: '#60a5fa', marginBottom: 12, fontSize: 20 }}>Price Effectiveness by Item</h3>
           <div style={{ display: 'grid', gap: 16 }}>
             {itemAnalytics
               .filter(item => item.flips >= 2 && item.buyPrices && item.buyPrices.length >= 2)
@@ -261,28 +261,28 @@ export default function ItemAnalytics({ itemAnalytics, topPerformers }) {
                 return (
                   <div key={item.name} className="gold-border" style={{ padding: 16 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-                      <h4 style={{ color: '#f5ead6', fontSize: 16, fontWeight: 600 }}>{item.name}</h4>
-                      <div style={{ fontSize: 13, color: '#8b7355' }}>{item.flips} flips</div>
+                      <h4 style={{ color: '#f5ead6', fontSize: 20, fontWeight: 600 }}>{item.name}</h4>
+                      <div style={{ fontSize: 20, color: '#8b7355' }}>{item.flips} flips</div>
                     </div>
                     
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 16 }}>
                       <div>
-                        <div style={{ fontSize: 12, color: '#8b7355', marginBottom: 8 }}>Buy Prices</div>
+                        <div style={{ fontSize: 15, color: '#8b7355', marginBottom: 8 }}>Buy Prices</div>
                         <div style={{ display: 'flex', gap: 16 }}>
                           <div>
-                            <div style={{ fontSize: 11, color: '#93c5fd' }}>Best</div>
+                            <div style={{ fontSize: 14, color: '#93c5fd' }}>Best</div>
                             <div style={{ color: '#4ade80', fontWeight: 600 }}>{formatGp(bestBuyPrice)}</div>
                           </div>
                           <div>
-                            <div style={{ fontSize: 11, color: '#93c5fd' }}>Worst</div>
+                            <div style={{ fontSize: 14, color: '#93c5fd' }}>Worst</div>
                             <div style={{ color: '#f87171', fontWeight: 600 }}>{formatGp(worstBuyPrice)}</div>
                           </div>
                           <div>
-                            <div style={{ fontSize: 11, color: '#93c5fd' }}>Range</div>
+                            <div style={{ fontSize: 14, color: '#93c5fd' }}>Range</div>
                             <div style={{ color: '#f5ead6' }}>{formatGp(buyPriceRange)}</div>
                           </div>
                           <div>
-                            <div style={{ fontSize: 11, color: '#93c5fd' }}>Avg</div>
+                            <div style={{ fontSize: 14, color: '#93c5fd' }}>Avg</div>
                             <div style={{ color: '#f5ead6' }}>{formatGp(item.avgBuyPrice)}</div>
                           </div>
                         </div>
@@ -290,22 +290,22 @@ export default function ItemAnalytics({ itemAnalytics, topPerformers }) {
                       
                       {bestSellPrice && worstSellPrice && (
                         <div>
-                          <div style={{ fontSize: 12, color: '#8b7355', marginBottom: 8 }}>Sell Prices</div>
+                          <div style={{ fontSize: 15, color: '#8b7355', marginBottom: 8 }}>Sell Prices</div>
                           <div style={{ display: 'flex', gap: 16 }}>
                             <div>
-                              <div style={{ fontSize: 11, color: '#fde68a' }}>Best</div>
+                              <div style={{ fontSize: 14, color: '#fde68a' }}>Best</div>
                               <div style={{ color: '#4ade80', fontWeight: 600 }}>{formatGp(bestSellPrice)}</div>
                             </div>
                             <div>
-                              <div style={{ fontSize: 11, color: '#fde68a' }}>Worst</div>
+                              <div style={{ fontSize: 14, color: '#fde68a' }}>Worst</div>
                               <div style={{ color: '#f87171', fontWeight: 600 }}>{formatGp(worstSellPrice)}</div>
                             </div>
                             <div>
-                              <div style={{ fontSize: 11, color: '#fde68a' }}>Range</div>
+                              <div style={{ fontSize: 14, color: '#fde68a' }}>Range</div>
                               <div style={{ color: '#f5ead6' }}>{formatGp(sellPriceRange)}</div>
                             </div>
                             <div>
-                              <div style={{ fontSize: 11, color: '#fde68a' }}>Avg</div>
+                              <div style={{ fontSize: 14, color: '#fde68a' }}>Avg</div>
                               <div style={{ color: '#f5ead6' }}>{formatGp(item.avgSellPrice)}</div>
                             </div>
                           </div>
@@ -313,7 +313,7 @@ export default function ItemAnalytics({ itemAnalytics, topPerformers }) {
                       )}
                     </div>
                     
-                    <div style={{ marginTop: 12, padding: 8, background: 'rgba(90, 74, 53, 0.2)', borderRadius: 4, fontSize: 13 }}>
+                    <div style={{ marginTop: 12, padding: 8, background: 'rgba(90, 74, 53, 0.2)', borderRadius: 4, fontSize: 20 }}>
                       <span style={{ color: '#8b7355' }}>Total Profit: </span>
                       <span style={{ color: item.totalProfit >= 0 ? '#4ade80' : '#f87171', fontWeight: 600 }}>
                         {formatGp(item.totalProfit)}

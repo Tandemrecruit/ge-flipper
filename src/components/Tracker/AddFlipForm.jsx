@@ -30,7 +30,7 @@ export default function AddFlipForm({ newFlip, setNewFlip, onSave, onCancel }) {
           {isManualEntry ? 'Add New Flip Entry' : `New Flip: ${newFlip.itemName}`}
         </span>
         {newFlip.suggestedSell > 0 && (
-          <span style={{ fontSize: 13, color: '#fbbf24' }}>
+          <span style={{ fontSize: 16, color: '#fbbf24' }}>
             Target sell: <strong>{formatGp(newFlip.suggestedSell)}</strong>
           </span>
         )}
@@ -38,7 +38,7 @@ export default function AddFlipForm({ newFlip, setNewFlip, onSave, onCancel }) {
       <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'flex-end' }}>
         {isManualEntry && (
           <div>
-            <label style={{ display: 'block', fontSize: 11, color: '#8b7355', marginBottom: 4 }}>Item Name *</label>
+            <label style={{ display: 'block', fontSize: 14, color: '#8b7355', marginBottom: 4 }}>Item Name *</label>
             <input
               type="text"
               className="input-field"
@@ -50,7 +50,7 @@ export default function AddFlipForm({ newFlip, setNewFlip, onSave, onCancel }) {
           </div>
         )}
         <div>
-          <label style={{ display: 'block', fontSize: 11, color: '#8b7355', marginBottom: 4 }}>Buy Price *</label>
+          <label style={{ display: 'block', fontSize: 14, color: '#8b7355', marginBottom: 4 }}>Buy Price *</label>
           <input
             type="number"
             className="input-field"
@@ -61,7 +61,7 @@ export default function AddFlipForm({ newFlip, setNewFlip, onSave, onCancel }) {
           />
         </div>
         <div>
-          <label style={{ display: 'block', fontSize: 11, color: '#8b7355', marginBottom: 4 }}>Quantity *</label>
+          <label style={{ display: 'block', fontSize: 14, color: '#8b7355', marginBottom: 4 }}>Quantity *</label>
           <input
             type="number"
             className="input-field"
@@ -73,9 +73,9 @@ export default function AddFlipForm({ newFlip, setNewFlip, onSave, onCancel }) {
         </div>
         {isManualEntry && (
           <div>
-            <label style={{ display: 'block', fontSize: 11, color: '#8b7355', marginBottom: 4 }}>
+            <label style={{ display: 'block', fontSize: 14, color: '#8b7355', marginBottom: 4 }}>
               Target Sell Price
-              <span style={{ marginLeft: 6, fontSize: 10, color: '#fbbf24' }}>(for expected)</span>
+              <span style={{ marginLeft: 6, fontSize: 13, color: '#fbbf24' }}>(for expected)</span>
             </label>
             <input
               type="number"
@@ -97,9 +97,9 @@ export default function AddFlipForm({ newFlip, setNewFlip, onSave, onCancel }) {
           </div>
         )}
         <div>
-          <label style={{ display: 'block', fontSize: 11, color: '#8b7355', marginBottom: 4 }}>
+          <label style={{ display: 'block', fontSize: 14, color: '#8b7355', marginBottom: 4 }}>
             Actual Sell (optional)
-            <span style={{ marginLeft: 6, fontSize: 10, color: newFlip.sellPriceIsNet ? '#6ee7a0' : '#fbbf24' }}>
+            <span style={{ marginLeft: 6, fontSize: 13, color: newFlip.sellPriceIsNet ? '#6ee7a0' : '#fbbf24' }}>
               {newFlip.sellPriceIsNet ? '(net)' : '(gross)'}
             </span>
           </label>
@@ -113,7 +113,7 @@ export default function AddFlipForm({ newFlip, setNewFlip, onSave, onCancel }) {
           />
         </div>
         <div>
-          <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: '#8b7355', marginBottom: 4 }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 14, color: '#8b7355', marginBottom: 4 }}>
             <input
               type="checkbox"
               checked={newFlip.sellPriceIsNet}
@@ -131,10 +131,10 @@ export default function AddFlipForm({ newFlip, setNewFlip, onSave, onCancel }) {
         </div>
       </div>
       {liveExpectedProfit !== 0 && (
-        <div style={{ marginTop: 12, fontSize: 13, color: liveExpectedProfit > 0 ? '#6ee7a0' : '#f87171' }}>
+        <div style={{ marginTop: 12, fontSize: 16, color: liveExpectedProfit > 0 ? '#6ee7a0' : '#f87171' }}>
           Expected profit: <strong>{liveExpectedProfit > 0 ? '+' : ''}{formatGp(liveExpectedProfit)}</strong>
           {isManualEntry && liveExpectedProfit > 0 && (
-            <span style={{ marginLeft: 8, fontSize: 11, color: '#8b7355' }}>(after 2% tax)</span>
+            <span style={{ marginLeft: 8, fontSize: 14, color: '#8b7355' }}>(after 2% tax)</span>
           )}
         </div>
       )}

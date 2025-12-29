@@ -89,7 +89,7 @@ export default function ROIDashboard({ flipLog, itemAnalytics }) {
 
   return (
     <div style={{ padding: 20 }}>
-      <h3 style={{ margin: '0 0 20px 0', color: '#f5ead6', fontSize: 20 }}>📊 ROI Dashboard</h3>
+      <h3 style={{ margin: '0 0 20px 0', color: '#f5ead6', fontSize: 22 }}>📊 ROI Dashboard</h3>
 
       {/* Portfolio Overview */}
       <div style={{ 
@@ -104,10 +104,10 @@ export default function ROIDashboard({ flipLog, itemAnalytics }) {
           borderRadius: 8, 
           border: '1px solid #3a3429'
         }}>
-          <div style={{ color: '#d4a84b', fontSize: 12, marginBottom: 8 }}>Total ROI</div>
+          <div style={{ color: '#d4a84b', fontSize: 15, marginBottom: 8 }}>Total ROI</div>
           <div style={{ 
             color: portfolioMetrics.roi >= 0 ? '#4caf50' : '#f44336', 
-            fontSize: 24, 
+            fontSize: 26, 
             fontWeight: 600 
           }}>
             {portfolioMetrics.roi.toFixed(2)}%
@@ -119,10 +119,10 @@ export default function ROIDashboard({ flipLog, itemAnalytics }) {
           borderRadius: 8, 
           border: '1px solid #3a3429'
         }}>
-          <div style={{ color: '#d4a84b', fontSize: 12, marginBottom: 8 }}>Total Profit</div>
+          <div style={{ color: '#d4a84b', fontSize: 15, marginBottom: 8 }}>Total Profit</div>
           <div style={{ 
             color: portfolioMetrics.totalProfit >= 0 ? '#4caf50' : '#f44336', 
-            fontSize: 24, 
+            fontSize: 26, 
             fontWeight: 600 
           }}>
             {formatCurrency(portfolioMetrics.totalProfit)}
@@ -134,8 +134,8 @@ export default function ROIDashboard({ flipLog, itemAnalytics }) {
           borderRadius: 8, 
           border: '1px solid #3a3429'
         }}>
-          <div style={{ color: '#d4a84b', fontSize: 12, marginBottom: 8 }}>Total Invested</div>
-          <div style={{ color: '#f5ead6', fontSize: 24, fontWeight: 600 }}>
+          <div style={{ color: '#d4a84b', fontSize: 15, marginBottom: 8 }}>Total Invested</div>
+          <div style={{ color: '#f5ead6', fontSize: 26, fontWeight: 600 }}>
             {formatCurrency(portfolioMetrics.totalInvested)}
           </div>
         </div>
@@ -145,8 +145,8 @@ export default function ROIDashboard({ flipLog, itemAnalytics }) {
           borderRadius: 8, 
           border: '1px solid #3a3429'
         }}>
-          <div style={{ color: '#d4a84b', fontSize: 12, marginBottom: 8 }}>Pending Investment</div>
-          <div style={{ color: '#ff9800', fontSize: 24, fontWeight: 600 }}>
+          <div style={{ color: '#d4a84b', fontSize: 15, marginBottom: 8 }}>Pending Investment</div>
+          <div style={{ color: '#ff9800', fontSize: 26, fontWeight: 600 }}>
             {formatCurrency(portfolioMetrics.pendingInvestment)}
           </div>
         </div>
@@ -164,14 +164,14 @@ export default function ROIDashboard({ flipLog, itemAnalytics }) {
                   <XAxis 
                     dataKey="name" 
                     stroke="#d4a84b"
-                    style={{ fontSize: 11 }}
+                    style={{ fontSize: 14 }}
                     angle={-45}
                     textAnchor="end"
                     height={80}
                   />
                   <YAxis 
                     stroke="#d4a84b"
-                    style={{ fontSize: 12 }}
+                    style={{ fontSize: 15 }}
                     tickFormatter={(value) => `${value.toFixed(0)}%`}
                   />
                   <Tooltip 
@@ -252,14 +252,14 @@ export default function ROIDashboard({ flipLog, itemAnalytics }) {
                 <XAxis 
                   dataKey="name" 
                   stroke="#d4a84b"
-                  style={{ fontSize: 11 }}
+                  style={{ fontSize: 14 }}
                   angle={-45}
                   textAnchor="end"
                   height={80}
                 />
                 <YAxis 
                   stroke="#d4a84b"
-                  style={{ fontSize: 12 }}
+                  style={{ fontSize: 15 }}
                   tickFormatter={(value) => `${value.toFixed(0)}%`}
                 />
                 <Tooltip 

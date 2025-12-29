@@ -9,14 +9,14 @@ export default function SlotCard({ slot, onUpdateQuantity, onChangeType, onClear
     <div className={`slot-card slot-${slot.type || 'medium'}`}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
         <div>
-          <span style={{ fontSize: 12, color: '#6b5a42' }}>Slot {slot.id || '?'}</span>
+          <span style={{ fontSize: 15, color: '#6b5a42' }}>Slot {slot.id || '?'}</span>
           <span className={`slot-type-badge slot-type-${slot.type || 'medium'}`} style={{ marginLeft: 8 }}>{slot.label || 'Unknown'}</span>
         </div>
         <select
           value={slot.type}
           onChange={(e) => onChangeType(slot.id, e.target.value)}
           className="input-field"
-          style={{ padding: '4px 8px', fontSize: 11 }}
+          style={{ padding: '4px 8px', fontSize: 14 }}
         >
           <option value="liquid">Liquid</option>
           <option value="medium">Medium</option>
@@ -35,7 +35,7 @@ export default function SlotCard({ slot, onUpdateQuantity, onChangeType, onClear
             />
             <div>
               <div style={{ fontWeight: 600, fontFamily: '"Cinzel", serif' }}>{slot.item.name || 'Unknown Item'}</div>
-              <div style={{ fontSize: 11, color: '#6b5a42' }}>
+              <div style={{ fontSize: 14, color: '#6b5a42' }}>
                 {slot.item.isVeryHighVolume ? '⚡ Fast' : slot.item.isHighVolume ? '💧 Liquid' : '🐢 Slow'} • {formatNumber(slot.item.volume || 0)}/day
               </div>
             </div>
@@ -43,8 +43,8 @@ export default function SlotCard({ slot, onUpdateQuantity, onChangeType, onClear
           
           <div style={{ background: 'rgba(0,0,0,0.3)', padding: '8px 10px', marginBottom: 8, border: '1px solid #3d3225' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-              <span style={{ fontSize: 11, color: '#6b5a42' }}>🔒 Locked Quantity:</span>
-              <span style={{ fontSize: 10, color: '#6ee7a0' }}>click to edit</span>
+              <span style={{ fontSize: 14, color: '#6b5a42' }}>🔒 Locked Quantity:</span>
+              <span style={{ fontSize: 13, color: '#6ee7a0' }}>click to edit</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
@@ -58,27 +58,27 @@ export default function SlotCard({ slot, onUpdateQuantity, onChangeType, onClear
                   style={{ 
                     width: 80, 
                     padding: '4px 8px', 
-                    fontSize: 16, 
+                    fontSize: 20, 
                     fontWeight: 700, 
                     textAlign: 'center',
                     color: slot.item.recommendedQty === 0 ? '#fca5a5' : '#d4a84b',
                     background: 'rgba(0,0,0,0.4)'
                   }}
                 />
-                <span style={{ fontSize: 12, color: '#6b5a42' }}>/ {(slot.item.buyLimit || 0).toLocaleString()}</span>
+                <span style={{ fontSize: 15, color: '#6b5a42' }}>/ {(slot.item.buyLimit || 0).toLocaleString()}</span>
               </div>
-              <span style={{ fontSize: 12, color: '#8b7355' }}>
+              <span style={{ fontSize: 15, color: '#8b7355' }}>
                 Cost: <span style={{ color: '#f5ead6', fontWeight: 600 }}>{formatGp(slot.item.totalCost || 0)}</span>
               </span>
             </div>
             {slot.item.recommendedQty === 0 && (
-              <div style={{ fontSize: 11, color: '#fca5a5', marginTop: 4 }}>
+              <div style={{ fontSize: 14, color: '#fca5a5', marginTop: 4 }}>
                 ⚡ Set quantity to calculate profit
               </div>
             )}
           </div>
           
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, fontSize: 12, marginBottom: 8 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, fontSize: 15, marginBottom: 8 }}>
             <div>
               <span style={{ color: '#6b5a42' }}>Buy:</span> <span style={{ color: '#60a5fa' }}>{formatGp(slot.item.suggestedBuy || slot.item.buyPrice || 0)}</span>
             </div>
@@ -104,7 +104,7 @@ export default function SlotCard({ slot, onUpdateQuantity, onChangeType, onClear
                   onTrackFlip(slot.item);
                 }
               }}
-              style={{ flex: 1, padding: '6px', fontSize: 11, background: 'linear-gradient(180deg, #2d4a35 0%, #1d3225 100%)' }}
+              style={{ flex: 1, padding: '6px', fontSize: 14, background: 'linear-gradient(180deg, #2d4a35 0%, #1d3225 100%)' }}
             >
               📊 Track Flip
             </button>
@@ -115,7 +115,7 @@ export default function SlotCard({ slot, onUpdateQuantity, onChangeType, onClear
                   onClear(slot.id);
                 }
               }}
-              style={{ padding: '6px 12px', fontSize: 11, background: 'rgba(220, 38, 38, 0.3)' }}
+              style={{ padding: '6px 12px', fontSize: 14, background: 'rgba(220, 38, 38, 0.3)' }}
               title="Clear slot"
             >
               ✔
@@ -125,8 +125,8 @@ export default function SlotCard({ slot, onUpdateQuantity, onChangeType, onClear
       ) : (
         <div style={{ textAlign: 'center', padding: '20px 0', color: '#5a4a35' }}>
           <div style={{ fontSize: 24, marginBottom: 8 }}>🔍</div>
-          <div style={{ fontSize: 12 }}>Empty slot</div>
-          <div style={{ fontSize: 11, color: '#4a3a25', marginTop: 4 }}>
+          <div style={{ fontSize: 15 }}>Empty slot</div>
+          <div style={{ fontSize: 14, color: '#4a3a25', marginTop: 4 }}>
             Assign from Item Finder or suggestions below
           </div>
         </div>

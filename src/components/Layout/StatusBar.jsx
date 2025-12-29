@@ -6,7 +6,7 @@ export default function StatusBar({ lastUpdate, apiSource, usingSampleData, item
   if (!lastUpdate) return null;
 
   return (
-    <div style={{ marginTop: 14, fontSize: 14, color: '#d4c4a4', fontFamily: '"Crimson Text", serif' }}>
+    <div style={{ marginTop: 14, fontSize: 18, color: '#d4c4a4', fontFamily: '"Crimson Text", serif' }}>
       {usingSampleData ? (
         <span style={{ color: '#fde68a', fontWeight: 600 }}>⚡ SAMPLE DATA • </span>
       ) : apiSource === 'proxy' ? (
@@ -36,7 +36,7 @@ export default function StatusBar({ lastUpdate, apiSource, usingSampleData, item
       {onRefresh && (
         <>
           <span style={{ margin: '0 8px', color: '#6b5a42' }}>•</span>
-          <button className="btn" onClick={onRefresh} disabled={loading} style={{ padding: '4px 12px', fontSize: 12 }}>
+          <button className="btn" onClick={onRefresh} disabled={loading} style={{ padding: '4px 12px', fontSize: 15 }}>
             {loading ? '⟳ Loading...' : '⟳ Refresh'}
           </button>
         </>

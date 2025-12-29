@@ -75,28 +75,28 @@ export default function AddSaleModal({ flip, onClose, onConfirm }) {
         onClick={(e) => e.stopPropagation()}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-          <h2 style={{ margin: 0, fontSize: 24, color: '#f5ead6' }}>
+          <h2 style={{ margin: 0, fontSize: 26, color: '#f5ead6' }}>
             Add Sale: {flip.itemName}
           </h2>
           <button className="btn" onClick={onClose} style={{ padding: '4px 12px' }}>✕</button>
         </div>
 
         <div style={{ marginBottom: 20, padding: 16, backgroundColor: '#1a1611', borderRadius: 8, border: '1px solid #3a3429' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, fontSize: 14 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, fontSize: 23 }}>
             <div>
-              <div style={{ color: '#d4a84b', fontSize: 12, marginBottom: 4 }}>Available Quantity</div>
-              <div style={{ color: '#f5ead6', fontSize: 18, fontWeight: 600 }}>{maxQty.toLocaleString()}</div>
+              <div style={{ color: '#d4a84b', fontSize: 15, marginBottom: 4 }}>Available Quantity</div>
+              <div style={{ color: '#f5ead6', fontSize: 23, fontWeight: 600 }}>{maxQty.toLocaleString()}</div>
             </div>
             <div>
-              <div style={{ color: '#d4a84b', fontSize: 12, marginBottom: 4 }}>Buy Price</div>
-              <div style={{ color: '#f5ead6', fontSize: 18, fontWeight: 600 }}>{formatGp(buyPrice)}</div>
+              <div style={{ color: '#d4a84b', fontSize: 15, marginBottom: 4 }}>Buy Price</div>
+              <div style={{ color: '#f5ead6', fontSize: 23, fontWeight: 600 }}>{formatGp(buyPrice)}</div>
             </div>
           </div>
         </div>
 
         <form onSubmit={handleSubmit}>
           <div style={{ marginBottom: 16 }}>
-            <label style={{ display: 'block', color: '#d4a84b', fontSize: 13, marginBottom: 8 }}>
+            <label style={{ display: 'block', color: '#d4a84b', fontSize: 20, marginBottom: 8 }}>
               Quantity Sold (leave as {maxQty} to sell all)
             </label>
             <input
@@ -110,13 +110,13 @@ export default function AddSaleModal({ flip, onClose, onConfirm }) {
               min="1"
               max={maxQty}
               className="input-field"
-              style={{ width: '100%', padding: '10px', fontSize: 16 }}
+              style={{ width: '100%', padding: '10px', fontSize: 20 }}
               required
             />
           </div>
 
           <div style={{ marginBottom: 16 }}>
-            <label style={{ display: 'block', color: '#d4a84b', fontSize: 13, marginBottom: 8 }}>
+            <label style={{ display: 'block', color: '#d4a84b', fontSize: 20, marginBottom: 8 }}>
               Sell Price ({isNetPrice ? 'Net' : 'Gross'})
             </label>
             <input
@@ -130,7 +130,7 @@ export default function AddSaleModal({ flip, onClose, onConfirm }) {
               min="0"
               step="0.01"
               className="input-field"
-              style={{ width: '100%', padding: '10px', fontSize: 16 }}
+              style={{ width: '100%', padding: '10px', fontSize: 20 }}
               required
               autoFocus
             />
@@ -142,7 +142,7 @@ export default function AddSaleModal({ flip, onClose, onConfirm }) {
                 onChange={(e) => setIsNetPrice(e.target.checked)}
                 style={{ width: 18, height: 18, cursor: 'pointer' }}
               />
-              <label htmlFor="isNetPriceSale" style={{ color: '#f5ead6', fontSize: 13, cursor: 'pointer' }}>
+              <label htmlFor="isNetPriceSale" style={{ color: '#f5ead6', fontSize: 20, cursor: 'pointer' }}>
                 Price is net (after tax, as shown in GE history)
               </label>
             </div>
@@ -156,7 +156,7 @@ export default function AddSaleModal({ flip, onClose, onConfirm }) {
               borderRadius: 4,
               color: '#fca5a5',
               marginBottom: 16,
-              fontSize: 13
+              fontSize: 20
             }}>
               {error}
             </div>
@@ -170,26 +170,26 @@ export default function AddSaleModal({ flip, onClose, onConfirm }) {
               borderRadius: 8,
               border: '1px solid rgba(74, 222, 128, 0.3)'
             }}>
-              <div style={{ color: '#d4a84b', fontSize: 12, marginBottom: 8 }}>Preview</div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, fontSize: 14 }}>
+              <div style={{ color: '#d4a84b', fontSize: 15, marginBottom: 8 }}>Preview</div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, fontSize: 23 }}>
                 <div>
-                  <div style={{ color: '#9e9e9e', fontSize: 11 }}>Gross Sell Price</div>
+                  <div style={{ color: '#9e9e9e', fontSize: 23 }}>Gross Sell Price</div>
                   <div style={{ color: '#f5ead6', fontWeight: 600 }}>{formatGp(previewGrossSell)}</div>
                 </div>
                 <div>
-                  <div style={{ color: '#9e9e9e', fontSize: 11 }}>Net Sell Price</div>
+                  <div style={{ color: '#9e9e9e', fontSize: 23 }}>Net Sell Price</div>
                   <div style={{ color: '#f5ead6', fontWeight: 600 }}>{formatGp(previewNetSell)}</div>
                 </div>
                 <div>
-                  <div style={{ color: '#9e9e9e', fontSize: 11 }}>Tax</div>
+                  <div style={{ color: '#9e9e9e', fontSize: 23 }}>Tax</div>
                   <div style={{ color: '#ff9800', fontWeight: 600 }}>-{formatGp(previewTax)}</div>
                 </div>
                 <div>
-                  <div style={{ color: '#9e9e9e', fontSize: 11 }}>Profit</div>
+                  <div style={{ color: '#9e9e9e', fontSize: 23 }}>Profit</div>
                   <div style={{ 
                     color: previewProfit >= 0 ? '#4caf50' : '#f44336', 
                     fontWeight: 600,
-                    fontSize: 16
+                    fontSize: 20
                   }}>
                     {previewProfit >= 0 ? '+' : ''}{formatGp(previewProfit)}
                   </div>
@@ -203,7 +203,7 @@ export default function AddSaleModal({ flip, onClose, onConfirm }) {
               type="button"
               className="btn"
               onClick={onClose}
-              style={{ flex: 1, padding: '12px', fontSize: 16 }}
+              style={{ flex: 1, padding: '12px', fontSize: 20 }}
             >
               Cancel
             </button>
@@ -213,7 +213,7 @@ export default function AddSaleModal({ flip, onClose, onConfirm }) {
               style={{ 
                 flex: 1, 
                 padding: '12px', 
-                fontSize: 16,
+                fontSize: 20,
                 backgroundColor: '#d4a84b',
                 color: '#151210',
                 fontWeight: 600

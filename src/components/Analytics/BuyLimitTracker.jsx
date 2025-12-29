@@ -34,16 +34,16 @@ export default function BuyLimitTracker({ flipLog, mapping }) {
 
   return (
     <div style={{ padding: 20 }}>
-      <h3 style={{ margin: '0 0 20px 0', color: '#f5ead6', fontSize: 20 }}>
+      <h3 style={{ margin: '0 0 20px 0', color: '#f5ead6', fontSize: 22 }}>
         🛒 Buy Limit Tracker
       </h3>
-      <p style={{ color: '#d4a84b', fontSize: 13, marginBottom: 16 }}>
+      <p style={{ color: '#d4a84b', fontSize: 16, marginBottom: 16 }}>
         Track remaining buy limits for items. Limits operate on a rolling 4-hour window.
       </p>
 
       {/* Search Input */}
       <div style={{ marginBottom: 20 }}>
-        <label style={{ display: 'block', fontSize: 13, color: '#d4c4a4', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 1, fontWeight: 600 }}>
+        <label style={{ display: 'block', fontSize: 16, color: '#d4c4a4', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 1, fontWeight: 600 }}>
           Search Items
         </label>
         <input
@@ -69,8 +69,8 @@ export default function BuyLimitTracker({ flipLog, mapping }) {
           borderRadius: 8, 
           border: '1px solid #3a3429'
         }}>
-          <div style={{ color: '#d4a84b', fontSize: 12 }}>Items Tracked</div>
-          <div style={{ color: '#f5ead6', fontSize: 24, fontWeight: 600 }}>
+          <div style={{ color: '#d4a84b', fontSize: 15 }}>Items Tracked</div>
+          <div style={{ color: '#f5ead6', fontSize: 26, fontWeight: 600 }}>
             {allItems.length}
           </div>
         </div>
@@ -80,8 +80,8 @@ export default function BuyLimitTracker({ flipLog, mapping }) {
           borderRadius: 8, 
           border: '1px solid #3a3429'
         }}>
-          <div style={{ color: '#d4a84b', fontSize: 12 }}>Available Limits</div>
-          <div style={{ color: '#4caf50', fontSize: 24, fontWeight: 600 }}>
+          <div style={{ color: '#d4a84b', fontSize: 15 }}>Available Limits</div>
+          <div style={{ color: '#4caf50', fontSize: 26, fontWeight: 600 }}>
             {itemsWithLimits.reduce((sum, item) => sum + (item.remaining || 0), 0).toLocaleString()}
           </div>
         </div>
@@ -116,27 +116,27 @@ export default function BuyLimitTracker({ flipLog, mapping }) {
                 }}
               >
                 <div style={{ flex: 1, minWidth: 200 }}>
-                  <div style={{ color: '#f5ead6', fontSize: 16, fontWeight: 600, marginBottom: 8 }}>
+                  <div style={{ color: '#f5ead6', fontSize: 20, fontWeight: 600, marginBottom: 8 }}>
                     {limit.itemName || `Item ${limit.itemId}`}
                   </div>
                   <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
                     <div>
-                      <div style={{ color: '#d4a84b', fontSize: 11 }}>Buy Limit</div>
-                      <div style={{ color: '#f5ead6', fontSize: 14 }}>
+                      <div style={{ color: '#d4a84b', fontSize: 18 }}>Buy Limit</div>
+                      <div style={{ color: '#f5ead6', fontSize: 18 }}>
                         {limit.buyLimit.toLocaleString()}
                       </div>
                     </div>
                     <div>
-                      <div style={{ color: '#d4a84b', fontSize: 11 }}>Purchased</div>
-                      <div style={{ color: '#ff9800', fontSize: 14 }}>
+                      <div style={{ color: '#d4a84b', fontSize: 18 }}>Purchased</div>
+                      <div style={{ color: '#ff9800', fontSize: 18 }}>
                         {used.toLocaleString()}
                       </div>
                     </div>
                     <div>
-                      <div style={{ color: '#d4a84b', fontSize: 11 }}>Remaining</div>
+                      <div style={{ color: '#d4a84b', fontSize: 18 }}>Remaining</div>
                       <div style={{ 
                         color: remaining !== null && remaining > 0 ? '#4caf50' : '#f44336', 
-                        fontSize: 14, 
+                        fontSize: 18, 
                         fontWeight: 600 
                       }}>
                         {remaining !== null ? remaining.toLocaleString() : 'N/A'}
@@ -171,7 +171,7 @@ export default function BuyLimitTracker({ flipLog, mapping }) {
                       color: '#f5ead6',
                       border: '1px solid #d4a84b',
                       borderRadius: 4,
-                      fontSize: 13
+                      fontSize: 16
                     }}
                     onKeyPress={(e) => {
                       if (e.key === 'Enter') {
@@ -188,7 +188,7 @@ export default function BuyLimitTracker({ flipLog, mapping }) {
                         handleManualUpdate(limit.itemId, parseInt(qty) || 0);
                       }
                     }}
-                    style={{ padding: '6px 12px', fontSize: 12 }}
+                    style={{ padding: '6px 12px', fontSize: 15 }}
                   >
                     Update
                   </button>

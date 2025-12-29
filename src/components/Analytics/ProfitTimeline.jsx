@@ -95,7 +95,7 @@ export default function ProfitTimeline({ flipLog }) {
   return (
     <div style={{ padding: 20 }}>
       <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
-        <h3 style={{ margin: 0, color: '#f5ead6', fontSize: 20 }}>💰 Profit Timeline</h3>
+        <h3 style={{ margin: 0, color: '#f5ead6', fontSize: 22 }}>💰 Profit Timeline</h3>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           <select
             value={viewMode}
@@ -106,7 +106,7 @@ export default function ProfitTimeline({ flipLog }) {
               color: '#f5ead6',
               border: '1px solid #d4a84b',
               borderRadius: 4,
-              fontSize: 13
+              fontSize: 16
             }}
           >
             <option value="daily">Daily</option>
@@ -122,7 +122,7 @@ export default function ProfitTimeline({ flipLog }) {
               color: '#f5ead6',
               border: '1px solid #d4a84b',
               borderRadius: 4,
-              fontSize: 13
+              fontSize: 16
             }}
           >
             <option value="line">Line Chart</option>
@@ -142,26 +142,26 @@ export default function ProfitTimeline({ flipLog }) {
         gap: 16
       }}>
         <div>
-          <div style={{ color: '#d4a84b', fontSize: 12 }}>Total Profit</div>
-          <div style={{ color: totalProfit >= 0 ? '#4caf50' : '#f44336', fontSize: 18, fontWeight: 600 }}>
+          <div style={{ color: '#d4a84b', fontSize: 15 }}>Total Profit</div>
+          <div style={{ color: totalProfit >= 0 ? '#4caf50' : '#f44336', fontSize: 23, fontWeight: 600 }}>
             {formatCurrency(totalProfit)}
           </div>
         </div>
         <div>
-          <div style={{ color: '#d4a84b', fontSize: 12 }}>Total Flips</div>
-          <div style={{ color: '#f5ead6', fontSize: 18, fontWeight: 600 }}>
+          <div style={{ color: '#d4a84b', fontSize: 15 }}>Total Flips</div>
+          <div style={{ color: '#f5ead6', fontSize: 23, fontWeight: 600 }}>
             {totalFlips}
           </div>
         </div>
         <div>
-          <div style={{ color: '#d4a84b', fontSize: 12 }}>Avg Profit/Flip</div>
-          <div style={{ color: '#f5ead6', fontSize: 18, fontWeight: 600 }}>
+          <div style={{ color: '#d4a84b', fontSize: 15 }}>Avg Profit/Flip</div>
+          <div style={{ color: '#f5ead6', fontSize: 23, fontWeight: 600 }}>
             {formatCurrency(avgProfitPerFlip)}
           </div>
         </div>
         <div>
-          <div style={{ color: '#d4a84b', fontSize: 12 }}>Periods Tracked</div>
-          <div style={{ color: '#f5ead6', fontSize: 18, fontWeight: 600 }}>
+          <div style={{ color: '#d4a84b', fontSize: 15 }}>Periods Tracked</div>
+          <div style={{ color: '#f5ead6', fontSize: 23, fontWeight: 600 }}>
             {timelineData.length}
           </div>
         </div>
@@ -174,14 +174,14 @@ export default function ProfitTimeline({ flipLog }) {
             <XAxis 
               dataKey="label"
               stroke="#d4a84b"
-              style={{ fontSize: 12 }}
+              style={{ fontSize: 15 }}
               angle={-45}
               textAnchor="end"
               height={80}
             />
             <YAxis 
               stroke="#d4a84b"
-              style={{ fontSize: 12 }}
+              style={{ fontSize: 15 }}
               tickFormatter={formatCurrency}
             />
             <Tooltip 

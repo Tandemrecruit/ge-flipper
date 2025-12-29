@@ -199,7 +199,7 @@ export default function EditBuyPriceModal({ flip, onClose, onConfirm }) {
         onClick={(e) => e.stopPropagation()}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-          <h2 style={{ margin: 0, fontSize: 24, color: '#f5ead6' }}>
+          <h2 style={{ margin: 0, fontSize: 26, color: '#f5ead6' }}>
             Edit Flip: {flip.itemName}
           </h2>
           <button className="btn" onClick={onClose} style={{ padding: '4px 12px' }}>✕</button>
@@ -209,7 +209,7 @@ export default function EditBuyPriceModal({ flip, onClose, onConfirm }) {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
             {isManualEntry && (
               <div style={{ gridColumn: '1 / -1' }}>
-                <label style={{ display: 'block', color: '#d4a84b', fontSize: 13, marginBottom: 8 }}>
+                <label style={{ display: 'block', color: '#d4a84b', fontSize: 20, marginBottom: 8 }}>
                   Item Name *
                 </label>
                 <input
@@ -221,7 +221,7 @@ export default function EditBuyPriceModal({ flip, onClose, onConfirm }) {
                   }}
                   placeholder="Enter item name"
                   className="input-field"
-                  style={{ width: '100%', padding: '10px', fontSize: 16 }}
+                  style={{ width: '100%', padding: '10px', fontSize: 20 }}
                   required
                   autoFocus
                 />
@@ -229,7 +229,7 @@ export default function EditBuyPriceModal({ flip, onClose, onConfirm }) {
             )}
 
             <div>
-              <label style={{ display: 'block', color: '#d4a84b', fontSize: 13, marginBottom: 8 }}>
+              <label style={{ display: 'block', color: '#d4a84b', fontSize: 20, marginBottom: 8 }}>
                 Item ID {isManualEntry && '(optional)'}
               </label>
               <input
@@ -243,13 +243,13 @@ export default function EditBuyPriceModal({ flip, onClose, onConfirm }) {
                 min="0"
                 step="1"
                 className="input-field"
-                style={{ width: '100%', padding: '10px', fontSize: 16 }}
+                style={{ width: '100%', padding: '10px', fontSize: 20 }}
                 disabled={!isManualEntry}
               />
             </div>
 
             <div>
-              <label style={{ display: 'block', color: '#d4a84b', fontSize: 13, marginBottom: 8 }}>
+              <label style={{ display: 'block', color: '#d4a84b', fontSize: 20, marginBottom: 8 }}>
                 Buy Price *
               </label>
               <input
@@ -263,14 +263,14 @@ export default function EditBuyPriceModal({ flip, onClose, onConfirm }) {
                 min="0"
                 step="0.01"
                 className="input-field"
-                style={{ width: '100%', padding: '10px', fontSize: 16 }}
+                style={{ width: '100%', padding: '10px', fontSize: 20 }}
                 required
                 autoFocus={!isManualEntry}
               />
             </div>
 
             <div>
-              <label style={{ display: 'block', color: '#d4a84b', fontSize: 13, marginBottom: 8 }}>
+              <label style={{ display: 'block', color: '#d4a84b', fontSize: 20, marginBottom: 8 }}>
                 Quantity *
               </label>
               <input
@@ -284,13 +284,13 @@ export default function EditBuyPriceModal({ flip, onClose, onConfirm }) {
                 min="1"
                 step="1"
                 className="input-field"
-                style={{ width: '100%', padding: '10px', fontSize: 16 }}
+                style={{ width: '100%', padding: '10px', fontSize: 20 }}
                 required
               />
             </div>
 
             <div>
-              <label style={{ display: 'block', color: '#d4a84b', fontSize: 13, marginBottom: 8 }}>
+              <label style={{ display: 'block', color: '#d4a84b', fontSize: 20, marginBottom: 8 }}>
                 Suggested Buy Price
               </label>
               <input
@@ -304,12 +304,12 @@ export default function EditBuyPriceModal({ flip, onClose, onConfirm }) {
                 min="0"
                 step="0.01"
                 className="input-field"
-                style={{ width: '100%', padding: '10px', fontSize: 16 }}
+                style={{ width: '100%', padding: '10px', fontSize: 20 }}
               />
             </div>
 
             <div>
-              <label style={{ display: 'block', color: '#d4a84b', fontSize: 13, marginBottom: 8 }}>
+              <label style={{ display: 'block', color: '#d4a84b', fontSize: 20, marginBottom: 8 }}>
                 Suggested Sell Price
               </label>
               <input
@@ -323,14 +323,14 @@ export default function EditBuyPriceModal({ flip, onClose, onConfirm }) {
                 min="0"
                 step="0.01"
                 className="input-field"
-                style={{ width: '100%', padding: '10px', fontSize: 16 }}
+                style={{ width: '100%', padding: '10px', fontSize: 20 }}
               />
             </div>
 
             <div style={{ gridColumn: '1 / -1' }}>
-              <label style={{ display: 'block', color: '#d4a84b', fontSize: 13, marginBottom: 8 }}>
-                Sell Price (per item) {sellPriceIsNet && <span style={{ fontSize: 11, color: '#6ee7a0' }}>(net)</span>}
-                {!sellPriceIsNet && <span style={{ fontSize: 11, color: '#fbbf24' }}>(gross)</span>}
+              <label style={{ display: 'block', color: '#d4a84b', fontSize: 20, marginBottom: 8 }}>
+                Sell Price (per item) {sellPriceIsNet && <span style={{ fontSize: 18, color: '#6ee7a0' }}>(net)</span>}
+                {!sellPriceIsNet && <span style={{ fontSize: 18, color: '#fbbf24' }}>(gross)</span>}
               </label>
               <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                 <input
@@ -344,9 +344,9 @@ export default function EditBuyPriceModal({ flip, onClose, onConfirm }) {
                   min="0"
                   step="0.01"
                   className="input-field"
-                  style={{ flex: 1, padding: '10px', fontSize: 16 }}
+                  style={{ flex: 1, padding: '10px', fontSize: 20 }}
                 />
-                <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#d4a84b', whiteSpace: 'nowrap' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 15, color: '#d4a84b', whiteSpace: 'nowrap' }}>
                   <input
                     type="checkbox"
                     checked={sellPriceIsNet}
@@ -367,7 +367,7 @@ export default function EditBuyPriceModal({ flip, onClose, onConfirm }) {
               borderRadius: 4,
               color: '#fca5a5',
               marginBottom: 16,
-              fontSize: 13
+              fontSize: 20
             }}>
               {error}
             </div>
@@ -381,25 +381,25 @@ export default function EditBuyPriceModal({ flip, onClose, onConfirm }) {
               borderRadius: 8,
               border: '1px solid rgba(74, 222, 128, 0.3)'
             }}>
-              <div style={{ color: '#d4a84b', fontSize: 12, marginBottom: 8 }}>Updated Calculations</div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12, fontSize: 14 }}>
+              <div style={{ color: '#d4a84b', fontSize: 15, marginBottom: 8 }}>Updated Calculations</div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12, fontSize: 18 }}>
                 <div>
-                  <div style={{ color: '#9e9e9e', fontSize: 11 }}>Total Cost</div>
+                  <div style={{ color: '#9e9e9e', fontSize: 18 }}>Total Cost</div>
                   <div style={{ 
                     color: '#f5ead6', 
                     fontWeight: 600,
-                    fontSize: 16
+                    fontSize: 20
                   }}>
                     {formatGp(previewValues.totalCost)}
                   </div>
                 </div>
                 {(suggestedSell.trim() || flip.suggestedSell) && (
                   <div>
-                    <div style={{ color: '#9e9e9e', fontSize: 11 }}>Expected Profit</div>
+                    <div style={{ color: '#9e9e9e', fontSize: 18 }}>Expected Profit</div>
                     <div style={{ 
                       color: previewValues.expectedProfit >= 0 ? '#4caf50' : '#f44336', 
                       fontWeight: 600,
-                      fontSize: 16
+                      fontSize: 20
                     }}>
                       {previewValues.expectedProfit >= 0 ? '+' : ''}{formatGp(previewValues.expectedProfit)}
                     </div>
@@ -407,11 +407,11 @@ export default function EditBuyPriceModal({ flip, onClose, onConfirm }) {
                 )}
                 {(sellPrice.trim() || flip.sellPrice || flip.netSellPrice) && (
                   <div>
-                    <div style={{ color: '#9e9e9e', fontSize: 11 }}>Actual Profit</div>
+                    <div style={{ color: '#9e9e9e', fontSize: 18 }}>Actual Profit</div>
                     <div style={{ 
                       color: previewValues.actualProfit >= 0 ? '#4caf50' : '#f44336', 
                       fontWeight: 600,
-                      fontSize: 16
+                      fontSize: 20
                     }}>
                       {previewValues.actualProfit >= 0 ? '+' : ''}{formatGp(previewValues.actualProfit)}
                     </div>
@@ -426,7 +426,7 @@ export default function EditBuyPriceModal({ flip, onClose, onConfirm }) {
               type="button"
               className="btn"
               onClick={onClose}
-              style={{ flex: 1, padding: '12px', fontSize: 16 }}
+              style={{ flex: 1, padding: '12px', fontSize: 20 }}
             >
               Cancel
             </button>
@@ -436,7 +436,7 @@ export default function EditBuyPriceModal({ flip, onClose, onConfirm }) {
               style={{ 
                 flex: 1, 
                 padding: '12px', 
-                fontSize: 16,
+                fontSize: 20,
                 backgroundColor: '#d4a84b',
                 color: '#151210',
                 fontWeight: 600

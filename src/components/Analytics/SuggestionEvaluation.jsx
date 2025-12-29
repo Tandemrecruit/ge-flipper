@@ -132,10 +132,10 @@ export default function SuggestionEvaluation({ prices, volumes, mapping, flipLog
   if (!evaluation) {
     return (
       <div style={{ padding: 20, textAlign: 'center', color: '#f5ead6' }}>
-        <h3 style={{ margin: '0 0 20px 0', color: '#f5ead6', fontSize: 20 }}>
+        <h3 style={{ margin: '0 0 20px 0', color: '#f5ead6', fontSize: 22 }}>
           Suggestion Accuracy
         </h3>
-        <p style={{ color: '#d4a84b', fontSize: 13 }}>
+        <p style={{ color: '#d4a84b', fontSize: 18 }}>
           Complete at least 3 flips to see accuracy analysis.
         </p>
       </div>
@@ -152,10 +152,10 @@ export default function SuggestionEvaluation({ prices, volumes, mapping, flipLog
   
   return (
     <div style={{ padding: 20 }}>
-      <h3 style={{ margin: '0 0 20px 0', color: '#f5ead6', fontSize: 20 }}>
+      <h3 style={{ margin: '0 0 20px 0', color: '#f5ead6', fontSize: 25 }}>
         Suggestion Accuracy Analysis
       </h3>
-      <p style={{ color: '#d4a84b', fontSize: 13, marginBottom: 16 }}>
+      <p style={{ color: '#d4a84b', fontSize: 18, marginBottom: 16 }}>
         How well did the scoring system predict profitable flips?
       </p>
       
@@ -173,7 +173,7 @@ export default function SuggestionEvaluation({ prices, volumes, mapping, flipLog
           padding: 16
         }}>
           <div style={{ color: '#d4a84b', fontSize: 12, marginBottom: 8 }}>Would Have Suggested</div>
-          <div style={{ color: '#4caf50', fontSize: 24, fontWeight: 600 }}>
+          <div style={{ color: '#4caf50', fontSize: 26, fontWeight: 600 }}>
             {suggestedWinRate.toFixed(1)}% Win Rate
           </div>
           <div style={{ color: '#8bc34a', fontSize: 14 }}>
@@ -188,7 +188,7 @@ export default function SuggestionEvaluation({ prices, volumes, mapping, flipLog
           padding: 16
         }}>
           <div style={{ color: '#d4a84b', fontSize: 12, marginBottom: 8 }}>Would NOT Have Suggested</div>
-          <div style={{ color: getBracketColor(notSuggestedWinRate), fontSize: 24, fontWeight: 600 }}>
+          <div style={{ color: getBracketColor(notSuggestedWinRate), fontSize: 26, fontWeight: 600 }}>
             {notSuggestedWinRate.toFixed(1)}% Win Rate
           </div>
           <div style={{ color: '#9e9e9e', fontSize: 14 }}>
@@ -198,7 +198,7 @@ export default function SuggestionEvaluation({ prices, volumes, mapping, flipLog
       </div>
       
       {/* Score bracket breakdown */}
-      <h4 style={{ color: '#f5ead6', fontSize: 16, marginBottom: 12 }}>Win Rate by Score Bracket</h4>
+      <h4 style={{ color: '#f5ead6', fontSize: 20, marginBottom: 12 }}>Win Rate by Score Bracket</h4>
       <div style={{ display: 'grid', gap: 12 }}>
         {[
           { key: 'high', label: 'High Score (70+)', icon: '🎯' },
@@ -223,7 +223,7 @@ export default function SuggestionEvaluation({ prices, volumes, mapping, flipLog
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ fontSize: 18 }}>{icon}</span>
+                <span style={{ fontSize: 23 }}>{icon}</span>
                 <div>
                   <div style={{ color: '#f5ead6', fontSize: 14, fontWeight: 500 }}>{label}</div>
                   <div style={{ color: '#9e9e9e', fontSize: 12 }}>
@@ -232,7 +232,7 @@ export default function SuggestionEvaluation({ prices, volumes, mapping, flipLog
                 </div>
               </div>
               <div style={{ textAlign: 'right' }}>
-                <div style={{ color: getBracketColor(bracket.winRate), fontSize: 18, fontWeight: 600 }}>
+                <div style={{ color: getBracketColor(bracket.winRate), fontSize: 23, fontWeight: 600 }}>
                   {bracket.winRate.toFixed(1)}%
                 </div>
                 <div style={{ color: '#d4a84b', fontSize: 12 }}>
@@ -263,7 +263,7 @@ export default function SuggestionEvaluation({ prices, volumes, mapping, flipLog
           }
         </div>
         {suggestedWinRate > notSuggestedWinRate && (
-          <div style={{ color: '#f5ead6', fontSize: 13, marginTop: 8 }}>
+          <div style={{ color: '#f5ead6', fontSize: 20, marginTop: 8 }}>
             Suggestions outperform by {(suggestedWinRate - notSuggestedWinRate).toFixed(1)} percentage points.
           </div>
         )}

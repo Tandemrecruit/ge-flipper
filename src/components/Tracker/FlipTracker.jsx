@@ -198,7 +198,7 @@ export default function FlipTracker() {
           <div style={{
             textAlign: 'center',
             color: '#f5ead6',
-            fontSize: 24,
+            fontSize: 26,
             fontWeight: 600
           }}>
             📁 Drop CSV file here to import
@@ -207,7 +207,7 @@ export default function FlipTracker() {
       )}
       
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-        <h2 style={{ margin: 0, fontSize: 24, color: '#f5ead6' }}>Flip Tracker</h2>
+        <h2 style={{ margin: 0, fontSize: 26, color: '#f5ead6' }}>Flip Tracker</h2>
         <div style={{ display: 'flex', gap: 12 }}>
           <button
             className="btn"
@@ -215,7 +215,7 @@ export default function FlipTracker() {
             disabled={flipLog.length === 0}
             style={{ 
               padding: '8px 16px', 
-              fontSize: 13,
+              fontSize: 16,
               opacity: flipLog.length === 0 ? 0.5 : 1,
               cursor: flipLog.length === 0 ? 'not-allowed' : 'pointer'
             }}
@@ -226,7 +226,7 @@ export default function FlipTracker() {
           <button
             className="btn"
             onClick={handleImportCSV}
-            style={{ padding: '8px 16px', fontSize: 13 }}
+            style={{ padding: '8px 16px', fontSize: 16 }}
             title="Import flips from CSV (or drag and drop a CSV file)"
           >
             📤 Import CSV
@@ -248,7 +248,7 @@ export default function FlipTracker() {
           <button 
             className="btn" 
             onClick={handleNewEntry}
-            style={{ padding: '8px 16px', fontSize: 13 }}
+            style={{ padding: '8px 16px', fontSize: 16 }}
           >
             + Add New Entry
           </button>

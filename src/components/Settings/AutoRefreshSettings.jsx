@@ -26,7 +26,7 @@ export default function AutoRefreshSettings({ onIntervalChange }) {
 
   return (
     <div style={{ padding: 20 }}>
-      <h3 style={{ margin: '0 0 20px 0', color: '#f5ead6', fontSize: 20 }}>
+      <h3 style={{ margin: '0 0 20px 0', color: '#f5ead6', fontSize: 22 }}>
         ⚙️ Auto-Refresh Settings
       </h3>
       
@@ -41,7 +41,7 @@ export default function AutoRefreshSettings({ onIntervalChange }) {
           <label style={{ 
             display: 'block', 
             color: '#d4a84b', 
-            fontSize: 13, 
+            fontSize: 16, 
             marginBottom: 8 
           }}>
             Price Refresh Interval
@@ -56,7 +56,7 @@ export default function AutoRefreshSettings({ onIntervalChange }) {
               color: '#f5ead6',
               border: '1px solid #d4a84b',
               borderRadius: 4,
-              fontSize: 14
+              fontSize: 18
             }}
           >
             {REFRESH_INTERVALS.map(option => (
@@ -69,7 +69,7 @@ export default function AutoRefreshSettings({ onIntervalChange }) {
         
         <div style={{ 
           color: '#9e9e9e', 
-          fontSize: 12, 
+          fontSize: 15, 
           marginTop: 8,
           padding: 8,
           backgroundColor: '#2a2419',

@@ -112,7 +112,7 @@ export default function ItemFinder({
 
       {error && (
         <div className={`info-banner ${usingSampleData ? 'info-banner-warning' : 'info-banner-error'}`} style={{ marginBottom: 20 }}>
-          <div style={{ fontSize: 15 }}>{error}</div>
+          <div style={{ fontSize: 19 }}>{error}</div>
         </div>
       )}
 

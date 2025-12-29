@@ -29,7 +29,7 @@ export default function FlipRow({ flip, onUpdateSale, onDelete, onEdit, onSplitS
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           {isSplit && (
             <span style={{ 
-              fontSize: 12, 
+              fontSize: 15, 
               color: '#d4a84b',
               fontStyle: 'italic'
             }} title={`Split from flip #${flip.splitFrom}`}>
@@ -38,7 +38,7 @@ export default function FlipRow({ flip, onUpdateSale, onDelete, onEdit, onSplitS
           )}
           <div>
             <div style={{ fontWeight: 600, color: '#f5ead6', fontSize: 17 }}>{flip.itemName}</div>
-            <div style={{ fontSize: 13, color: '#6b5a42', marginTop: 4 }}>
+            <div style={{ fontSize: 16, color: '#6b5a42', marginTop: 4 }}>
               {new Date(flip.date).toLocaleDateString()}
             </div>
           </div>
@@ -56,7 +56,7 @@ export default function FlipRow({ flip, onUpdateSale, onDelete, onEdit, onSplitS
       <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid rgba(90, 74, 53, 0.3)', fontSize: 17 }}>
         <span className={displayExpected >= 0 ? 'profit-positive' : 'profit-negative'}>
           {displayExpected >= 0 ? '+' : ''}{formatGp(displayExpected)}
-          {isManualEntry && <span style={{ fontSize: 11, color: '#8b7355', marginLeft: 4 }} title="Manual entry - showing actual profit">*</span>}
+          {isManualEntry && <span style={{ fontSize: 14, color: '#8b7355', marginLeft: 4 }} title="Manual entry - showing actual profit">*</span>}
         </span>
       </td>
       <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid rgba(90, 74, 53, 0.3)', fontSize: 17 }}>
@@ -70,7 +70,7 @@ export default function FlipRow({ flip, onUpdateSale, onDelete, onEdit, onSplitS
         <span style={{ 
           padding: '4px 10px', 
           borderRadius: 3, 
-          fontSize: 13, 
+          fontSize: 16, 
           background: flip.status === 'complete' ? 'rgba(74, 222, 128, 0.25)' : 'rgba(251, 191, 36, 0.25)',
           color: flip.status === 'complete' ? '#6ee7a0' : '#fbbf24'
         }}>
@@ -84,7 +84,7 @@ export default function FlipRow({ flip, onUpdateSale, onDelete, onEdit, onSplitS
               <button 
                 className="btn" 
                 onClick={() => onUpdateSale(flip.id)} 
-                style={{ padding: '6px 12px', fontSize: 13 }}
+                style={{ padding: '6px 12px', fontSize: 16 }}
                 title="Mark entire quantity as sold"
               >
                 Add Sale
@@ -94,7 +94,7 @@ export default function FlipRow({ flip, onUpdateSale, onDelete, onEdit, onSplitS
                 onClick={() => onSplitSale(flip.id)} 
                 style={{ 
                   padding: '6px 12px', 
-                  fontSize: 13,
+                  fontSize: 16,
                   background: 'rgba(212, 168, 75, 0.3)',
                   color: '#f5ead6'
                 }}
@@ -106,7 +106,7 @@ export default function FlipRow({ flip, onUpdateSale, onDelete, onEdit, onSplitS
           )}
           {flip.status === 'complete' && flip.splitFrom && (
             <span style={{ 
-              fontSize: 11, 
+              fontSize: 14, 
               color: '#d4a84b',
               fontStyle: 'italic'
             }}>
@@ -118,7 +118,7 @@ export default function FlipRow({ flip, onUpdateSale, onDelete, onEdit, onSplitS
             onClick={() => onEdit(flip.id)} 
             style={{ 
               padding: '6px 12px', 
-              fontSize: 13,
+              fontSize: 16,
               background: 'rgba(59, 130, 246, 0.3)',
               color: '#93c5fd'
             }}
@@ -131,7 +131,7 @@ export default function FlipRow({ flip, onUpdateSale, onDelete, onEdit, onSplitS
             onClick={() => onDelete(flip.id)} 
             style={{ 
               padding: '6px 12px', 
-              fontSize: 13, 
+              fontSize: 16, 
               background: 'rgba(220, 38, 38, 0.3)',
               color: '#fca5a5'
             }}

@@ -31,7 +31,7 @@ export default function AnalyticsDashboard({
   return (
     <div style={{ padding: 20 }}>
       <div style={{ marginBottom: 20 }}>
-        <h2 style={{ margin: '0 0 20px 0', color: '#f5ead6', fontSize: 24 }}>
+        <h2 style={{ margin: '0 0 20px 0', color: '#f5ead6', fontSize: 26 }}>
           📊 Analytics Dashboard
         </h2>
         
@@ -51,7 +51,7 @@ export default function AnalyticsDashboard({
               className="btn"
               style={{
                 padding: '8px 16px',
-                fontSize: 13,
+                fontSize: 16,
                 backgroundColor: activeView === view.id ? '#d4a84b' : '#2a2419',
                 color: activeView === view.id ? '#151210' : '#f5ead6',
                 border: `1px solid ${activeView === view.id ? '#d4a84b' : '#3a3429'}`,

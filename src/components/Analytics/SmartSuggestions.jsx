@@ -12,10 +12,10 @@ export default function SmartSuggestions({ prices, volumes, mapping, flipLog, it
   if (!prices || !volumes || !mapping) {
     return (
       <div style={{ padding: 20, textAlign: 'center', color: '#f5ead6' }}>
-        <h3 style={{ margin: '0 0 20px 0', color: '#f5ead6', fontSize: 20 }}>
+        <h3 style={{ margin: '0 0 20px 0', color: '#f5ead6', fontSize: 22 }}>
           🤖 Smart Suggestions
         </h3>
-        <p style={{ color: '#d4a84b', fontSize: 13 }}>
+        <p style={{ color: '#d4a84b', fontSize: 16 }}>
           Loading price data...
         </p>
       </div>
@@ -251,10 +251,10 @@ export default function SmartSuggestions({ prices, volumes, mapping, flipLog, it
 
   return (
     <div style={{ padding: 20 }}>
-      <h3 style={{ margin: '0 0 20px 0', color: '#f5ead6', fontSize: 20 }}>
+      <h3 style={{ margin: '0 0 20px 0', color: '#f5ead6', fontSize: 25 }}>
         🤖 Smart Suggestions
       </h3>
-      <p style={{ color: '#d4a84b', fontSize: 13, marginBottom: 16 }}>
+      <p style={{ color: '#d4a84b', fontSize: 16, marginBottom: 16 }}>
         Based on your flip history and successful patterns
       </p>
 
@@ -288,7 +288,7 @@ export default function SmartSuggestions({ prices, volumes, mapping, flipLog, it
                   </div>
                   <div style={{ 
                     color: getConfidenceColor(item.confidence), 
-                    fontSize: 12,
+                    fontSize: 15,
                     marginTop: 4
                   }}>
                     {item.reason}
@@ -300,7 +300,7 @@ export default function SmartSuggestions({ prices, volumes, mapping, flipLog, it
             <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'center' }}>
               {item.suggestionScore !== undefined && (
                 <div style={{ textAlign: 'right' }}>
-                  <div style={{ color: '#d4a84b', fontSize: 11 }}>Score</div>
+                  <div style={{ color: '#d4a84b', fontSize: 14 }}>Score</div>
                   <div style={{ 
                     color: item.suggestionScore >= 70 ? '#4caf50' : item.suggestionScore >= 45 ? '#ff9800' : '#f44336', 
                     fontSize: 16, 
@@ -311,19 +311,19 @@ export default function SmartSuggestions({ prices, volumes, mapping, flipLog, it
                 </div>
               )}
               <div style={{ textAlign: 'right' }}>
-                <div style={{ color: '#d4a84b', fontSize: 11 }}>Expected Profit</div>
+                <div style={{ color: '#d4a84b', fontSize: 14 }}>Expected Profit</div>
                 <div style={{ color: '#4caf50', fontSize: 16, fontWeight: 600 }}>
                   {formatCurrency(item.suggestedProfit)}
                 </div>
               </div>
               <div style={{ textAlign: 'right' }}>
-                <div style={{ color: '#d4a84b', fontSize: 11 }}>Instant Profit</div>
-                <div style={{ color: '#8bc34a', fontSize: 14 }}>
+                <div style={{ color: '#d4a84b', fontSize: 14 }}>Instant Profit</div>
+                <div style={{ color: '#8bc34a', fontSize: 18 }}>
                   {formatCurrency(item.netProfit)}
                 </div>
               </div>
               <div style={{ textAlign: 'right' }}>
-                <div style={{ color: '#d4a84b', fontSize: 11 }}>Spread</div>
+                <div style={{ color: '#d4a84b', fontSize: 14 }}>Spread</div>
                 <div style={{ color: '#f5ead6', fontSize: 16, fontWeight: 600 }}>
                   {item.spreadPercent.toFixed(2)}%
                 </div>
@@ -333,7 +333,7 @@ export default function SmartSuggestions({ prices, volumes, mapping, flipLog, it
                   <button
                     className="btn"
                     onClick={() => onTrackFlip(item)}
-                    style={{ padding: '6px 12px', fontSize: 12 }}
+                    style={{ padding: '6px 12px', fontSize: 15 }}
                   >
                     Track
                   </button>
@@ -342,7 +342,7 @@ export default function SmartSuggestions({ prices, volumes, mapping, flipLog, it
                   <button
                     className="btn"
                     onClick={() => onAssignToSlot(null, item)}
-                    style={{ padding: '6px 12px', fontSize: 12 }}
+                    style={{ padding: '6px 12px', fontSize: 15 }}
                   >
                     Add to Slot
                   </button>

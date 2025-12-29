@@ -80,10 +80,10 @@ export default function CompetitionAnalysis({ prices, volumes, mapping }) {
 
   return (
     <div style={{ padding: 20 }}>
-      <h3 style={{ margin: '0 0 20px 0', color: '#f5ead6', fontSize: 20 }}>
+      <h3 style={{ margin: '0 0 20px 0', color: '#f5ead6', fontSize: 22 }}>
         🎯 Competition Analysis
       </h3>
-      <p style={{ color: '#d4a84b', fontSize: 13, marginBottom: 16 }}>
+      <p style={{ color: '#d4a84b', fontSize: 20, marginBottom: 16 }}>
         Competition is estimated from liquidity/activity (daily + 5m volume), spread tightness, ROI attraction, buy-limit turnover, and update freshness.
       </p>
 
@@ -113,10 +113,10 @@ export default function CompetitionAnalysis({ prices, volumes, mapping }) {
             </div>
 
             <div style={{ minWidth: 200 }}>
-              <div style={{ color: '#f5ead6', fontSize: 16, fontWeight: 600, marginBottom: 8 }}>
+              <div style={{ color: '#f5ead6', fontSize: 20, fontWeight: 600, marginBottom: 8 }}>
                 {item.name}
               </div>
-              <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', fontSize: 12 }}>
+              <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', fontSize: 15 }}>
                 <div>
                   <span style={{ color: '#d4a84b' }}>Volume: </span>
                   <span style={{ color: '#f5ead6' }}>{formatCurrency(item.volume || 0)}/day</span>
@@ -133,38 +133,38 @@ export default function CompetitionAnalysis({ prices, volumes, mapping }) {
             </div>
 
             <div style={{ textAlign: 'center', minWidth: 120 }}>
-              <div style={{ color: '#d4a84b', fontSize: 11, marginBottom: 4 }}>Competition</div>
+              <div style={{ color: '#d4a84b', fontSize: 14, marginBottom: 4 }}>Competition</div>
               <div style={{ 
                 color: getCompetitionColor(item.competitionLevel), 
-                fontSize: 16, 
+                fontSize: 20, 
                 fontWeight: 600 
               }}>
                 {item.competitionLevel}
               </div>
-              <div style={{ color: '#9e9e9e', fontSize: 11, marginTop: 4 }}>
+              <div style={{ color: '#9e9e9e', fontSize: 14, marginTop: 4 }}>
                 {item.competitionScore.toFixed(0)}/100
               </div>
             </div>
 
             <div style={{ textAlign: 'right', minWidth: 150 }}>
-              <div style={{ color: '#d4a84b', fontSize: 11, marginBottom: 4 }}>Adjusted Profit</div>
+              <div style={{ color: '#d4a84b', fontSize: 14, marginBottom: 4 }}>Adjusted Profit</div>
               <div style={{ 
                 color: getOpportunityColor(item.opportunity), 
-                fontSize: 18, 
+                fontSize: 23, 
                 fontWeight: 600 
               }}>
                 {formatCurrency(item.adjustedProfit)}
               </div>
               <div style={{ 
                 color: item.suggestedProfit > item.adjustedProfit ? '#f44336' : '#4caf50', 
-                fontSize: 11, 
+                fontSize: 14, 
                 marginTop: 4 
               }}>
                 vs {formatCurrency(item.suggestedProfit)} expected
               </div>
               <div style={{ 
                 color: getOpportunityColor(item.opportunity), 
-                fontSize: 11, 
+                fontSize: 14, 
                 marginTop: 4 
               }}>
                 {item.opportunity} Opportunity

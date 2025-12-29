@@ -65,7 +65,7 @@ export default function PriceHistoryChart({ itemId: propItemId, itemName: propIt
   return (
     <div style={{ padding: 20 }}>
       <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
-        <h3 style={{ margin: 0, color: '#f5ead6', fontSize: 20 }}>
+        <h3 style={{ margin: 0, color: '#f5ead6', fontSize: 22 }}>
           📈 Price History
         </h3>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
@@ -79,7 +79,7 @@ export default function PriceHistoryChart({ itemId: propItemId, itemName: propIt
                 color: '#f5ead6',
                 border: '1px solid #d4a84b',
                 borderRadius: 4,
-                fontSize: 13,
+                fontSize: 16,
                 minWidth: 200
               }}
             >
@@ -100,7 +100,7 @@ export default function PriceHistoryChart({ itemId: propItemId, itemName: propIt
               color: '#f5ead6',
               border: '1px solid #d4a84b',
               borderRadius: 4,
-              fontSize: 13
+              fontSize: 16
             }}
           >
             <option value={1}>Last 24 Hours</option>
@@ -117,7 +117,7 @@ export default function PriceHistoryChart({ itemId: propItemId, itemName: propIt
               color: '#f5ead6',
               border: '1px solid #d4a84b',
               borderRadius: 4,
-              fontSize: 13
+              fontSize: 16
             }}
           >
             <option value="daily">Daily View</option>
@@ -135,20 +135,20 @@ export default function PriceHistoryChart({ itemId: propItemId, itemName: propIt
       }}>
         <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', marginBottom: 16 }}>
           <div>
-            <div style={{ color: '#d4a84b', fontSize: 12 }}>Current High</div>
-            <div style={{ color: '#f5ead6', fontSize: 18, fontWeight: 600 }}>
+            <div style={{ color: '#d4a84b', fontSize: 15 }}>Current High</div>
+            <div style={{ color: '#f5ead6', fontSize: 23, fontWeight: 600 }}>
               {formatCurrency(currentPrice.high)}
             </div>
           </div>
           <div>
-            <div style={{ color: '#d4a84b', fontSize: 12 }}>Current Low</div>
-            <div style={{ color: '#f5ead6', fontSize: 18, fontWeight: 600 }}>
+            <div style={{ color: '#d4a84b', fontSize: 15 }}>Current Low</div>
+            <div style={{ color: '#f5ead6', fontSize: 23, fontWeight: 600 }}>
               {formatCurrency(currentPrice.low)}
             </div>
           </div>
           <div>
-            <div style={{ color: '#d4a84b', fontSize: 12 }}>Spread</div>
-            <div style={{ color: '#f5ead6', fontSize: 18, fontWeight: 600 }}>
+            <div style={{ color: '#d4a84b', fontSize: 15 }}>Spread</div>
+            <div style={{ color: '#f5ead6', fontSize: 23, fontWeight: 600 }}>
               {((currentPrice.high - currentPrice.low) / currentPrice.low * 100).toFixed(2)}%
             </div>
           </div>
@@ -162,14 +162,14 @@ export default function PriceHistoryChart({ itemId: propItemId, itemName: propIt
             <XAxis 
               dataKey={viewMode === 'daily' ? 'date' : 'label'}
               stroke="#d4a84b"
-              style={{ fontSize: 12 }}
+              style={{ fontSize: 15 }}
               angle={-45}
               textAnchor="end"
               height={80}
             />
             <YAxis 
               stroke="#d4a84b"
-              style={{ fontSize: 12 }}
+              style={{ fontSize: 15 }}
               tickFormatter={formatCurrency}
             />
             <Tooltip 

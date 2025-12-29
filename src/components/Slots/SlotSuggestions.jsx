@@ -248,11 +248,11 @@ export default function SlotSuggestions({ prices, volumes, mapping, availableGol
               alt="" style={{ width: 28, height: 28 }}
               onError={(e) => { e.target.style.display = 'none'; }}
             />
-            <div style={{ fontSize: 15, fontWeight: 600, color: '#f5ead6' }}>{item.name}</div>
+            <div style={{ fontSize: 19, fontWeight: 600, color: '#f5ead6' }}>{item.name}</div>
           </div>
           <select
             className="input-field"
-            style={{ padding: '6px 8px', fontSize: 13, width: 80 }}
+            style={{ padding: '6px 8px', fontSize: 16, width: 80 }}
             defaultValue=""
             onChange={(e) => {
               if (e.target.value) {
@@ -267,7 +267,7 @@ export default function SlotSuggestions({ prices, volumes, mapping, availableGol
             ))}
           </select>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, fontSize: 14 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, fontSize: 18 }}>
           <div style={{ color: '#b8a88a' }}>📦 Buy: <span style={{ 
             color: slotType === 'liquid' ? '#e9d5ff' : slotType === 'medium' ? '#fde68a' : '#a7f3d0', 
             fontWeight: 600 
@@ -289,7 +289,7 @@ export default function SlotSuggestions({ prices, volumes, mapping, availableGol
 
   if (!hasSuggestions) {
     return (
-      <div style={{ padding: 20, textAlign: 'center', color: '#8b7355', fontSize: 14 }}>
+      <div style={{ padding: 20, textAlign: 'center', color: '#8b7355', fontSize: 18 }}>
         No suggestions available. Try adjusting filters in the Item Finder.
       </div>
     );
@@ -299,7 +299,7 @@ export default function SlotSuggestions({ prices, volumes, mapping, availableGol
     <div style={{ marginTop: 24 }}>
       <div className="ornament" style={{ margin: '24px 0' }}>→ → →</div>
       <h3 style={{ margin: '0 0 12px 0', color: '#f5d77a', fontSize: 22 }}>💡 Recommended Items</h3>
-      <p style={{ margin: '0 0 20px 0', fontSize: 14, color: '#b8a88a', fontFamily: '"Crimson Text", serif' }}>
+      <p style={{ margin: '0 0 20px 0', fontSize: 18, color: '#b8a88a', fontFamily: '"Crimson Text", serif' }}>
         {availableGold ? (
           <>
             Purchase volumes based on <span style={{ color: remainingBudget > 0 ? '#6ee7a0' : '#fca5a5', fontWeight: 600 }}>{formatGp(remainingBudget || 0)}</span> remaining
@@ -316,37 +316,37 @@ export default function SlotSuggestions({ prices, volumes, mapping, availableGol
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 24 }}>
         {/* Liquid Recommendations */}
         <div>
-          <div className="slot-type-badge slot-type-liquid" style={{ marginBottom: 16, padding: '6px 12px', fontSize: 13 }}>For Liquid Slots</div>
+          <div className="slot-type-badge slot-type-liquid" style={{ marginBottom: 16, padding: '6px 12px', fontSize: 16 }}>For Liquid Slots</div>
           {suggestions.liquid.length > 0 ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {suggestions.liquid.slice(0, 5).map(item => renderSuggestionCard(item, 'liquid'))}
             </div>
           ) : (
-            <div style={{ color: '#8b7355', fontSize: 14, padding: 16 }}>No recommendations available</div>
+            <div style={{ color: '#8b7355', fontSize: 18, padding: 16 }}>No recommendations available</div>
           )}
         </div>
 
         {/* Medium Recommendations */}
         <div>
-          <div className="slot-type-badge slot-type-medium" style={{ marginBottom: 16, padding: '6px 12px', fontSize: 13 }}>For Medium Slots</div>
+          <div className="slot-type-badge slot-type-medium" style={{ marginBottom: 16, padding: '6px 12px', fontSize: 16 }}>For Medium Slots</div>
           {suggestions.medium.length > 0 ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {suggestions.medium.slice(0, 5).map(item => renderSuggestionCard(item, 'medium'))}
             </div>
           ) : (
-            <div style={{ color: '#8b7355', fontSize: 14, padding: 16 }}>No recommendations available</div>
+            <div style={{ color: '#8b7355', fontSize: 18, padding: 16 }}>No recommendations available</div>
           )}
         </div>
 
         {/* Opportunity Recommendations */}
         <div>
-          <div className="slot-type-badge slot-type-opportunity" style={{ marginBottom: 16, padding: '6px 12px', fontSize: 13 }}>For Opportunity Slot</div>
+          <div className="slot-type-badge slot-type-opportunity" style={{ marginBottom: 16, padding: '6px 12px', fontSize: 16 }}>For Opportunity Slot</div>
           {suggestions.opportunity.length > 0 ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {suggestions.opportunity.slice(0, 5).map(item => renderSuggestionCard(item, 'opportunity'))}
             </div>
           ) : (
-            <div style={{ color: '#8b7355', fontSize: 14, padding: 16 }}>No recommendations available</div>
+            <div style={{ color: '#8b7355', fontSize: 18, padding: 16 }}>No recommendations available</div>
           )}
         </div>
       </div>

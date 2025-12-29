@@ -39,7 +39,7 @@ export default function Filters({
     <div className="gold-border" style={{ padding: 20, marginBottom: 20 }}>
       <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', alignItems: 'center' }}>
         <div style={{ flex: '1 1 250px' }}>
-          <label style={{ display: 'block', fontSize: 13, color: '#d4c4a4', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 1, fontWeight: 600 }}>
+          <label style={{ display: 'block', fontSize: 16, color: '#d4c4a4', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 1, fontWeight: 600 }}>
             Search Items
           </label>
           <input
@@ -53,7 +53,7 @@ export default function Filters({
         </div>
         
         <div>
-          <label style={{ display: 'block', fontSize: 13, color: '#d4c4a4', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 1, fontWeight: 600 }}>
+          <label style={{ display: 'block', fontSize: 16, color: '#d4c4a4', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 1, fontWeight: 600 }}>
             Min Profit
           </label>
           <input
@@ -66,7 +66,7 @@ export default function Filters({
         </div>
         
         <div>
-          <label style={{ display: 'block', fontSize: 13, color: '#d4c4a4', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 1, fontWeight: 600 }}>
+          <label style={{ display: 'block', fontSize: 16, color: '#d4c4a4', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 1, fontWeight: 600 }}>
             Min ROI %
           </label>
           <input
@@ -80,7 +80,7 @@ export default function Filters({
         </div>
         
         <div>
-          <label style={{ display: 'block', fontSize: 13, color: '#d4c4a4', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 1, fontWeight: 600 }}>
+          <label style={{ display: 'block', fontSize: 16, color: '#d4c4a4', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 1, fontWeight: 600 }}>
             My Gold (gp)
           </label>
           <input
@@ -102,7 +102,7 @@ export default function Filters({
               onChange={(e) => handleChange('showSafeOnly', e.target.checked)}
               style={{ width: 20, height: 20, accentColor: '#d4a84b' }}
             />
-            <span style={{ fontSize: 15, color: '#f5ead6', fontWeight: 500 }}>Safe Flips Only</span>
+            <span style={{ fontSize: 19, color: '#f5ead6', fontWeight: 500 }}>Safe Flips Only</span>
           </label>
           {onRefresh && (
             <button className="btn" onClick={onRefresh} disabled={loading}>
@@ -123,7 +123,7 @@ export default function Filters({
       
       {showSafeOnly && (
         <div className="info-banner info-banner-info" style={{ marginTop: 16 }}>
-          <strong style={{ color: '#93c5fd', fontSize: 15 }}>🔒 Safe Flip Rules:</strong>
+          <strong style={{ color: '#93c5fd', fontSize: 19 }}>🔒 Safe Flip Rules:</strong>
           <span style={{ marginLeft: 8 }}>Break-even = 2.04% spread.</span>
           <span style={{ marginLeft: 16, color: '#e9d5ff' }}>⚡ Fast (50K+/day):</span> <span style={{ color: '#f5ead6' }}>2.5%+ OK</span>
           <span style={{ marginLeft: 12 }}>•</span>

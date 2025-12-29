@@ -141,7 +141,7 @@ export default function SlotAllocation({
           <div style={{
             textAlign: 'center',
             color: '#f5ead6',
-            fontSize: 24,
+            fontSize: 26,
             fontWeight: 600
           }}>
             📁 Drop CSV file here to import
@@ -150,7 +150,7 @@ export default function SlotAllocation({
       )}
       
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-        <h2 style={{ margin: 0, fontSize: 24, color: '#f5ead6' }}>Slot Allocation</h2>
+        <h2 style={{ margin: 0, fontSize: 26, color: '#f5ead6' }}>Slot Allocation</h2>
         <div style={{ display: 'flex', gap: 12 }}>
           <button
             className="btn"
@@ -158,7 +158,7 @@ export default function SlotAllocation({
             disabled={slots.length === 0}
             style={{ 
               padding: '8px 16px', 
-              fontSize: 13,
+              fontSize: 16,
               opacity: slots.length === 0 ? 0.5 : 1,
               cursor: slots.length === 0 ? 'not-allowed' : 'pointer'
             }}
@@ -169,7 +169,7 @@ export default function SlotAllocation({
           <button
             className="btn"
             onClick={handleImportCSV}
-            style={{ padding: '8px 16px', fontSize: 13 }}
+            style={{ padding: '8px 16px', fontSize: 16 }}
             title="Import slots from CSV (or drag and drop a CSV file)"
           >
             📤 Import CSV
