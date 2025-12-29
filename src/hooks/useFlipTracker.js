@@ -18,6 +18,11 @@ export const useFlipTracker = () => {
           const netSell = flip.suggestedSell - taxPerItem;
           flip.expectedProfit = (netSell - flip.buyPrice) * flip.quantity;
         }
+        // Migrate: add purchaseDate if missing (backfill from date)
+        // purchaseDate = actual purchase time, date = entry creation time
+        if (!flip.purchaseDate && flip.date) {
+          flip.purchaseDate = flip.date;
+        }
         return flip;
       });
       return migrated;
@@ -52,58 +57,53 @@ export const useFlipTracker = () => {
     try {
       const serialized = JSON.stringify(flipLog);
       localStorage.setItem('ge-flip-tracker', serialized);
-      
-      // Only dispatch event if this is not the initial mount (to avoid clearing other instances)
-      // OR if we actually have items (to broadcast new additions)
-      if (!isInitialMount.current || flipLog.length > 0) {
-        // Trigger a custom event so other instances can sync
-        window.dispatchEvent(new CustomEvent('flipLogUpdated', { detail: flipLog }));
-      }
-      
+
       // Mark that initial mount is complete
       if (isInitialMount.current) {
         isInitialMount.current = false;
       }
+      // Note: The 'storage' event automatically fires in other tabs when localStorage changes
+      // No need to manually dispatch events
     } catch (err) {
       console.error('Failed to save flip log:', err);
     }
   }, [flipLog]);
 
-  // Listen for updates from other instances (to sync between App.jsx and FlipTracker)
+  // Listen for updates from other tabs via storage event (fires automatically on localStorage changes)
   useEffect(() => {
-    const handleUpdate = (e) => {
-      const updatedLog = e.detail;
-      if (Array.isArray(updatedLog)) {
+    const handleStorageChange = (e) => {
+      // Only handle changes to our flip tracker key
+      if (e.key !== 'ge-flip-tracker' || !e.newValue) return;
+
+      try {
+        const updatedLog = JSON.parse(e.newValue);
+        if (!Array.isArray(updatedLog)) return;
+
         // Use ref to get latest value (avoid stale closure)
         const currentLog = flipLogRef.current;
-        
+
         // Never update to an empty array if we have items (prevents clearing)
         if (updatedLog.length === 0 && currentLog.length > 0) {
-          console.log('flipLogUpdated: Ignoring empty update (current log has items)');
+          console.log('storage event: Ignoring empty update (current log has items)');
           return;
         }
-        
+
         // Always prefer the longer log, or if same length, prefer the one with newer items
-        const shouldUpdate = updatedLog.length > currentLog.length || 
-          (updatedLog.length === currentLog.length && updatedLog.length > 0 && 
+        const shouldUpdate = updatedLog.length > currentLog.length ||
+          (updatedLog.length === currentLog.length && updatedLog.length > 0 &&
            Math.max(...updatedLog.map(f => f.id || 0)) > Math.max(...currentLog.map(f => f.id || 0)));
-        
-        console.log('flipLogUpdated event received', {
-          currentLength: currentLog.length,
-          updatedLength: updatedLog.length,
-          shouldUpdate
-        });
-        
+
         if (shouldUpdate) {
-          console.log('flipLogUpdated: Updating flip log', updatedLog.length, 'items');
+          console.log('storage event: Updating flip log from another tab', updatedLog.length, 'items');
           setFlipLog(updatedLog);
-        } else {
-          console.log('flipLogUpdated: Ignoring update (current log is same or newer)');
         }
+      } catch (err) {
+        console.error('Failed to parse storage event:', err);
       }
     };
-    window.addEventListener('flipLogUpdated', handleUpdate);
-    return () => window.removeEventListener('flipLogUpdated', handleUpdate);
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, []); // Empty deps - ref ensures we always have latest value
 
   const addFlip = (item) => {
@@ -204,6 +204,7 @@ export const useFlipTracker = () => {
     const totalGrossSell = enteredSell ? grossSell * qty : null;
     const totalNetSell = enteredSell ? netSell * qty : null;
     
+    const now = new Date().toISOString();
     const flip = {
       id: Date.now(),
       itemId: newFlip.itemId,
@@ -222,8 +223,9 @@ export const useFlipTracker = () => {
       actualProfit: actualProfit,
       tax,
       status: enteredSell ? 'complete' : 'pending',
-      date: new Date().toISOString(),
-      soldDate: enteredSell ? new Date().toISOString() : null
+      date: now,              // Entry creation time
+      purchaseDate: now,      // Actual purchase time (same as date on initial creation)
+      soldDate: enteredSell ? now : null
     };
     
     setFlipLog(prev => [flip, ...prev]);
@@ -357,17 +359,25 @@ export const useFlipTracker = () => {
         tax: splitTax,
         status: 'complete',
         splitFrom: originalFlip.id,
-        date: originalFlip.date, // Preserve original purchase date for buy limit tracking
-        soldDate: new Date().toISOString() // Track when sale occurred
+        date: originalFlip.date,                 // Preserve original entry date
+        purchaseDate: originalFlip.purchaseDate || originalFlip.date, // Preserve actual purchase time
+        soldDate: new Date().toISOString()       // Track when sale occurred
       };
       
       // Expected profit = (netSellPrice - buyPrice) * quantity
       // where netSellPrice = suggestedSell - tax
+      // For manual entries without suggestedSell, expected profit should be 0 (not negative)
       const suggestedSell = originalFlip.suggestedSell || 0;
-      const remainingTaxPerItem = calculateTax(suggestedSell);
-      const remainingNetSell = suggestedSell - remainingTaxPerItem;
-      const remainingExpectedProfit = (remainingNetSell - originalFlip.buyPrice) * remainingQty;
-      
+      let remainingExpectedProfit;
+      if (suggestedSell > 0) {
+        const remainingTaxPerItem = calculateTax(suggestedSell);
+        const remainingNetSell = suggestedSell - remainingTaxPerItem;
+        remainingExpectedProfit = (remainingNetSell - originalFlip.buyPrice) * remainingQty;
+      } else {
+        // Manual entry without target sell price - expected profit is 0 until sold
+        remainingExpectedProfit = 0;
+      }
+
       const updatedOriginal = {
         ...originalFlip,
         quantity: remainingQty,

@@ -94,13 +94,24 @@ export const useBuyLimitTracker = (flipLog, mapping) => {
 
       // Group flips by itemId and recompute purchases from scratch
       const purchasesByItem = {};
-      
+      const processedFlipIds = new Set(); // Track processed flip IDs for deduplication
+
       flipLog.forEach(flip => {
         if (!flip.itemId || (flip.status !== 'complete' && flip.status !== 'pending') || !flip.buyPrice) return;
 
-        const flipTimestamp = flip.date ? new Date(flip.date).toISOString() : now.toISOString();
+        // Skip split entries - they represent partial sales, not new purchases
+        // The original purchase was already counted; splits just track how it was sold
+        if (flip.splitFrom !== null && flip.splitFrom !== undefined) return;
+
+        // Deduplicate by flip.id to prevent double-counting
+        if (processedFlipIds.has(flip.id)) return;
+        processedFlipIds.add(flip.id);
+
+        // Use purchaseDate if available (actual purchase time), fall back to date (entry creation time)
+        const purchaseTimestamp = flip.purchaseDate || flip.date;
+        const flipTimestamp = purchaseTimestamp ? new Date(purchaseTimestamp).toISOString() : now.toISOString();
         const flipTime = new Date(flipTimestamp).getTime();
-        
+
         // Only include flips within the last 4 hours (rolling window)
         if (flipTime > cutoffTime) {
           if (!purchasesByItem[flip.itemId]) {

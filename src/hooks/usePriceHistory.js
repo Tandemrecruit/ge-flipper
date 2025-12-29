@@ -4,6 +4,57 @@ import { useState, useEffect, useMemo } from 'react';
 const STORAGE_KEY = 'ge-price-history';
 const MAX_HISTORY_DAYS = 30; // Keep 30 days of history
 
+// Configurable volatility thresholds
+const VOLATILITY_THRESHOLDS = {
+  low: 2,      // < 2% coefficient of variation is low volatility
+  medium: 5,   // 2-5% is medium
+  high: 10     // 5-10% is high, > 10% is extreme
+};
+
+// Spread stability thresholds (coefficient of variation %)
+const SPREAD_STABILITY_THRESHOLDS = {
+  stable: 25,   // CV < 25% is stable
+  variable: 50  // 25-50% is variable, > 50% is unstable
+};
+
+// Recommended refresh intervals based on volatility (in milliseconds)
+const UPDATE_INTERVALS = {
+  extreme: 30000,   // 30 seconds for extreme volatility
+  high: 60000,      // 1 minute for high volatility
+  medium: 120000,   // 2 minutes for medium
+  low: 300000       // 5 minutes for low/unknown
+};
+
+// IQR-based outlier detection and coefficient of variation calculation
+const calculateCVWithOutliers = (values) => {
+  if (values.length < 2) return { cv: null, outlierCount: 0, filtered: values };
+
+  // Sort values for IQR calculation
+  const sorted = [...values].sort((a, b) => a - b);
+  const q1Index = Math.floor(sorted.length * 0.25);
+  const q3Index = Math.floor(sorted.length * 0.75);
+  const q1 = sorted[q1Index];
+  const q3 = sorted[q3Index];
+  const iqr = q3 - q1;
+
+  // Filter outliers (values outside 1.5 * IQR from quartiles)
+  const lowerBound = q1 - 1.5 * iqr;
+  const upperBound = q3 + 1.5 * iqr;
+  const filtered = values.filter(v => v >= lowerBound && v <= upperBound);
+  const outlierCount = values.length - filtered.length;
+
+  if (filtered.length < 2) {
+    return { cv: null, outlierCount, filtered: values };
+  }
+
+  // Calculate coefficient of variation on filtered data
+  const mean = filtered.reduce((a, b) => a + b, 0) / filtered.length;
+  const variance = filtered.reduce((sum, v) => sum + Math.pow(v - mean, 2), 0) / filtered.length;
+  const cv = mean > 0 ? (Math.sqrt(variance) / mean) * 100 : 0;
+
+  return { cv, outlierCount, filtered };
+};
+
 export const usePriceHistory = (prices, mapping, flipLog = [], slots = [], currentItemId = null) => {
   const [history, setHistory] = useState(() => {
     try {
@@ -190,68 +241,79 @@ export const usePriceHistory = (prices, mapping, flipLog = [], slots = [], curre
   };
 
   // Compute volatility metrics for an item
-  // Returns { volatilityPercent, volatilityStatus, spreadStability }
+  // Returns { volatilityPercent, volatilityStatus, spreadStability, recommendedInterval, outlierCount }
   const getVolatility = (itemId, days = 7) => {
     const daily = getDailyHistory(itemId, days);
-    
+
     // Not enough data - assume unknown/medium volatility
     if (daily.length < 2) {
       return {
         volatilityPercent: null,
         volatilityStatus: 'unknown',
         spreadStability: 'unknown',
-        dataPoints: 0
+        dataPoints: 0,
+        recommendedInterval: UPDATE_INTERVALS.low,
+        outlierCount: 0
       };
     }
-    
-    // Compute coefficient of variation for high prices (std dev / mean * 100)
+
+    // Extract high and low prices
     const highs = daily.map(d => d.avgHigh).filter(h => h > 0);
     const lows = daily.map(d => d.avgLow).filter(l => l > 0);
-    
-    if (highs.length < 2) {
+
+    if (highs.length < 2 || lows.length < 2) {
       return {
         volatilityPercent: null,
         volatilityStatus: 'unknown',
         spreadStability: 'unknown',
-        dataPoints: daily.length
+        dataPoints: daily.length,
+        recommendedInterval: UPDATE_INTERVALS.low,
+        outlierCount: 0
       };
     }
-    
-    const mean = highs.reduce((a, b) => a + b, 0) / highs.length;
-    const variance = highs.reduce((sum, h) => sum + Math.pow(h - mean, 2), 0) / highs.length;
-    const stdDev = Math.sqrt(variance);
-    const volatilityPercent = (stdDev / mean) * 100;
-    
+
+    // Calculate CV with outlier detection for both highs AND lows
+    const highStats = calculateCVWithOutliers(highs);
+    const lowStats = calculateCVWithOutliers(lows);
+
+    // Use the higher CV (more conservative - reflects greater volatility)
+    const volatilityPercent = Math.max(highStats.cv || 0, lowStats.cv || 0);
+    const totalOutlierCount = highStats.outlierCount + lowStats.outlierCount;
+
     // Compute spread stability (how consistent is the high-low spread)
     // Use daily entries directly to ensure high/low pairs correspond to the same day
     const spreads = daily
       .filter(d => d.avgHigh > 0 && d.avgLow > 0)
       .map(d => ((d.avgHigh - d.avgLow) / d.avgLow) * 100)
       .filter(s => s > 0);
-    
+
     let spreadStability = 'stable';
     if (spreads.length >= 2) {
-      const spreadMean = spreads.reduce((a, b) => a + b, 0) / spreads.length;
-      const spreadVariance = spreads.reduce((sum, s) => sum + Math.pow(s - spreadMean, 2), 0) / spreads.length;
-      const spreadCV = spreadMean > 0 ? (Math.sqrt(spreadVariance) / spreadMean) * 100 : 0;
-      
-      // Spread CV > 50% means spreads are inconsistent (risky)
-      if (spreadCV > 50) spreadStability = 'unstable';
-      else if (spreadCV > 25) spreadStability = 'variable';
+      const spreadStats = calculateCVWithOutliers(spreads);
+      const spreadCV = spreadStats.cv || 0;
+
+      // Use configurable thresholds
+      if (spreadCV > SPREAD_STABILITY_THRESHOLDS.variable) spreadStability = 'unstable';
+      else if (spreadCV > SPREAD_STABILITY_THRESHOLDS.stable) spreadStability = 'variable';
     }
-    
-    // Classify volatility status
+
+    // Classify volatility status using configurable thresholds
     let volatilityStatus;
-    if (volatilityPercent < 2) volatilityStatus = 'low';
-    else if (volatilityPercent < 5) volatilityStatus = 'medium';
-    else if (volatilityPercent < 10) volatilityStatus = 'high';
+    if (volatilityPercent < VOLATILITY_THRESHOLDS.low) volatilityStatus = 'low';
+    else if (volatilityPercent < VOLATILITY_THRESHOLDS.medium) volatilityStatus = 'medium';
+    else if (volatilityPercent < VOLATILITY_THRESHOLDS.high) volatilityStatus = 'high';
     else volatilityStatus = 'extreme';
-    
+
+    // Determine recommended update interval based on volatility
+    const recommendedInterval = UPDATE_INTERVALS[volatilityStatus] || UPDATE_INTERVALS.low;
+
     return {
       volatilityPercent,
       volatilityStatus,
       spreadStability,
-      dataPoints: daily.length
+      dataPoints: daily.length,
+      recommendedInterval,
+      outlierCount: totalOutlierCount
     };
   };
 

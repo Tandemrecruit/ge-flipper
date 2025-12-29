@@ -1,6 +1,47 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { fetchApi } from '../utils/api';
 import { SAMPLE_MAPPING, SAMPLE_PRICES, SAMPLE_VOLUMES } from '../utils/constants';
+
+// Cache configuration
+const PRICE_CACHE_KEY = 'ge-price-cache';
+const CACHE_EXPIRY_MS = 5 * 60 * 1000; // 5 minutes
+
+// Request deduplication - store pending promises to avoid duplicate fetches
+const pendingRequests = new Map();
+
+// Load cached prices from localStorage
+const loadCachedPrices = () => {
+  try {
+    const cached = localStorage.getItem(PRICE_CACHE_KEY);
+    if (cached) {
+      const { prices, timestamp } = JSON.parse(cached);
+      if (Date.now() - timestamp < CACHE_EXPIRY_MS && prices && Object.keys(prices).length > 0) {
+        return { prices, timestamp: new Date(timestamp) };
+      }
+    }
+  } catch (err) {
+    console.error('Failed to load price cache:', err);
+  }
+  return null;
+};
+
+// Save prices to localStorage cache
+const savePriceCache = (prices) => {
+  try {
+    localStorage.setItem(PRICE_CACHE_KEY, JSON.stringify({
+      prices,
+      timestamp: Date.now()
+    }));
+  } catch (err) {
+    console.error('Failed to save price cache:', err);
+    // Handle quota exceeded - try to clear old cache
+    if (err.name === 'QuotaExceededError') {
+      try {
+        localStorage.removeItem(PRICE_CACHE_KEY);
+      } catch {}
+    }
+  }
+};
 
 // Helper to normalize API data into consistent { [stringId]: value } maps
 const normalizeDataMap = (data, valueExtractor) => {
@@ -24,17 +65,40 @@ const normalizeDataMap = (data, valueExtractor) => {
 };
 
 export const usePrices = (autoRefreshInterval = 60000) => {
-  const [prices, setPrices] = useState({});
+  // Initialize from cache if available
+  const cachedData = loadCachedPrices();
+  const [prices, setPrices] = useState(cachedData?.prices || {});
   const [volumes, setVolumes] = useState({});
   const [mapping, setMapping] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [apiSource, setApiSource] = useState('');
+  const [loading, setLoading] = useState(!cachedData); // Skip loading if we have cached data
+  const [apiSource, setApiSource] = useState(cachedData ? 'cache' : '');
   const [volumeSource, setVolumeSource] = useState(''); // Track volume data source
   const [usingSampleData, setUsingSampleData] = useState(false);
   const [error, setError] = useState(null);
-  const [lastUpdate, setLastUpdate] = useState(null);
+  const [lastUpdate, setLastUpdate] = useState(cachedData?.timestamp || null);
   const [volumesUpdatedAt, setVolumesUpdatedAt] = useState(null); // Track volume fetch time
   const [autoRefreshEnabled, setAutoRefreshEnabled] = useState(true);
+
+  // Listen for price cache updates from other tabs
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key === PRICE_CACHE_KEY && e.newValue) {
+        try {
+          const { prices: newPrices, timestamp } = JSON.parse(e.newValue);
+          if (Date.now() - timestamp < CACHE_EXPIRY_MS && newPrices && Object.keys(newPrices).length > 0) {
+            setPrices(newPrices);
+            setLastUpdate(new Date(timestamp));
+            setApiSource('cache (synced)');
+          }
+        } catch (err) {
+          console.error('Failed to parse storage event:', err);
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   // Fetch item mappings
   useEffect(() => {
@@ -54,59 +118,75 @@ export const usePrices = (autoRefreshInterval = 60000) => {
     loadMapping();
   }, []);
 
-  // Fetch prices
+  // Fetch prices with request deduplication
   const fetchPrices = async () => {
+    const cacheKey = 'prices-fetch';
+
+    // Check if there's already a pending request - return that promise instead
+    if (pendingRequests.has(cacheKey)) {
+      return pendingRequests.get(cacheKey);
+    }
+
     setLoading(true);
     setError(null);
-    
-    try {
-      // Fetch both latest (for instant buy/sell) and 5m averages (for realistic pricing)
-      const [latestResult, avgResult] = await Promise.all([
-        fetchApi('latest'),
-        fetchApi('5m')
-      ]);
-      
-      const priceData = latestResult.data;
-      const avgData = avgResult.data;
-      const priceSource = latestResult.source;
-      
-      if (!priceData || !priceData.data || Object.keys(priceData.data).length === 0) {
-        throw new Error('No price data received');
-      }
-      
-      // Merge 5m average data into prices for more realistic suggestions
-      const mergedPrices = { ...priceData.data };
-      if (avgData && avgData.data) {
-        for (const [id, avgInfo] of Object.entries(avgData.data)) {
-          if (mergedPrices[id]) {
-            // Add 5m average prices to the price object
-            mergedPrices[id] = {
-              ...mergedPrices[id],
-              avgHighPrice: avgInfo.avgHighPrice || null,
-              avgLowPrice: avgInfo.avgLowPrice || null,
-              highPriceVolume: avgInfo.highPriceVolume || 0,
-              lowPriceVolume: avgInfo.lowPriceVolume || 0
-            };
+
+    const fetchPromise = (async () => {
+      try {
+        // Fetch both latest (for instant buy/sell) and 5m averages (for realistic pricing)
+        const [latestResult, avgResult] = await Promise.all([
+          fetchApi('latest'),
+          fetchApi('5m')
+        ]);
+
+        const priceData = latestResult.data;
+        const avgData = avgResult.data;
+        const priceSource = latestResult.source;
+
+        if (!priceData || !priceData.data || Object.keys(priceData.data).length === 0) {
+          throw new Error('No price data received');
+        }
+
+        // Merge 5m average data into prices for more realistic suggestions
+        const mergedPrices = { ...priceData.data };
+        if (avgData && avgData.data) {
+          for (const [id, avgInfo] of Object.entries(avgData.data)) {
+            if (mergedPrices[id]) {
+              // Add 5m average prices to the price object
+              mergedPrices[id] = {
+                ...mergedPrices[id],
+                avgHighPrice: avgInfo.avgHighPrice || null,
+                avgLowPrice: avgInfo.avgLowPrice || null,
+                highPriceVolume: avgInfo.highPriceVolume || 0,
+                lowPriceVolume: avgInfo.lowPriceVolume || 0
+              };
+            }
           }
         }
+
+        setPrices(mergedPrices);
+        setLastUpdate(new Date());
+        setUsingSampleData(false);
+        setApiSource(priceSource);
+
+        // Save to cache for persistence across refreshes and cross-tab sync
+        savePriceCache(mergedPrices);
+
+      } catch (err) {
+        console.error('Fetch error:', err);
+        // Load sample data as fallback
+        setPrices(SAMPLE_PRICES);
+        setLastUpdate(new Date());
+        setUsingSampleData(true);
+        setApiSource('sample');
+        setError('Using sample data - live API unavailable. Run the proxy (npm run proxy) for live prices.');
+      } finally {
+        pendingRequests.delete(cacheKey);
+        setLoading(false);
       }
-      
-      setPrices(mergedPrices);
-      setLastUpdate(new Date());
-      setUsingSampleData(false);
-      setApiSource(priceSource);
-      
-    } catch (err) {
-      console.error('Fetch error:', err);
-      // Load sample data as fallback
-      setPrices(SAMPLE_PRICES);
-      setLastUpdate(new Date());
-      setUsingSampleData(true);
-      setApiSource('sample');
-      setError('Using sample data - live API unavailable. Run the proxy (npm run proxy) for live prices.');
-    } finally {
-      setLoading(false);
-    }
+    })();
+
+    pendingRequests.set(cacheKey, fetchPromise);
+    return fetchPromise;
   };
 
   useEffect(() => {
