@@ -223,11 +223,11 @@ export const usePriceHistory = (prices, mapping, flipLog = [], slots = [], curre
     const volatilityPercent = (stdDev / mean) * 100;
     
     // Compute spread stability (how consistent is the high-low spread)
-    const spreads = daily.map((d, i) => {
-      const h = highs[i] || d.avgHigh;
-      const l = lows[i] || d.avgLow;
-      return h > 0 ? ((h - l) / l) * 100 : 0;
-    }).filter(s => s > 0);
+    // Use daily entries directly to ensure high/low pairs correspond to the same day
+    const spreads = daily
+      .filter(d => d.avgHigh > 0 && d.avgLow > 0)
+      .map(d => ((d.avgHigh - d.avgLow) / d.avgLow) * 100)
+      .filter(s => s > 0);
     
     let spreadStability = 'stable';
     if (spreads.length >= 2) {
